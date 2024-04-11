@@ -3,6 +3,7 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 from model import db, User, Role
 
 class UserRegister(Resource):
+
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('name', type=str, required=True, help='Name is required')

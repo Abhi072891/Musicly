@@ -44,11 +44,36 @@ export default {
     };
   },
   mounted() {
-
+    this.checkLogin()
   },
   methods: {
-    
-  },
+    checkLogin() {
+      if (!localStorage.token) {
+        // Redirect to login page if token is not present
+        this.$router.push('/login');
+        return;
+      }
+
+      // Fetch request to check if token is valid
+      fetch('http://127.0.0.1:5000/jwt/testing', {
+        headers: {
+          method: 'GET',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.token}`
+        }
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Authentication failed');
+        }
+      })
+      .catch(error => {
+        // Display alert and redirect to login page
+        alert('Authentication failed. Please log in again.');
+        this.$router.push('/login');
+      });
+    }
+  }
 };
 </script>
 

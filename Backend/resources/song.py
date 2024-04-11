@@ -37,7 +37,7 @@ song_fields = {
 
 
 class SongResource(Resource):
-    # @jwt_required()
+    @jwt_required()
     # @roles_required(["user"])
     @cache.cached(timeout=300, query_string=True)
     def get(self, id):
