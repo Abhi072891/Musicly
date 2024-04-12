@@ -29,7 +29,7 @@ import admindashboard from '@/components/admin/admindashboard.vue'
 import adminsongs from '@/components/admin/adminsongs.vue'
 import adminalbums from '@/components/admin/adminalbums.vue'
 import admincreators from '@/components/admin/admincreators.vue'
-import waitingcreatorapplication from '@/components/admin/waitingcreatorsapplication.vue'
+import waitingcreatorapplication from '@/components/admin/waitingcreatorapplication.vue'
 
 const routes = [
 

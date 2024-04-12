@@ -39,7 +39,7 @@
       },
       approve(userId) {
         if (confirm("Are you sure you want to approve this creator application?")) {
-        fetch(`http://127.0.0.1:5000/creatorapprove/${userId}`)
+        fetch(`http://127.0.0.1:5000/creator-approve/${parseInt(userId)}`)
           .then(response => {
             if (!response.ok) {
               throw new Error('Network response was not ok');
@@ -54,7 +54,7 @@
       }},
       reject(userId) {
         if (confirm("Are you sure you want to reject this creator application?")) {
-        fetch(`http://127.0.0.1:5000/creatorreject/${userId}`)
+        fetch(`http://127.0.0.1:5000/creator-reject/${userId}`)
           .then(response => {
             if (!response.ok) {
               throw new Error('Network response was not ok');

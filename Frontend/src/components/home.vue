@@ -98,11 +98,17 @@
       };
     },
     mounted() {
+      this.checkUser();
       this.fetchSongs();
       this.fetchAlbums();
       this.fetchArtists();
     },
     methods: {
+      checkUser(){
+          if(localStorage.user_role==='admin'){
+            this.$router.push('/admindashboard')
+          }
+      },
       fetchSongs() {
         // if (!localStorage.token) {
         //   this.$router.push('/login');

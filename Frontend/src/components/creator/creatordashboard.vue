@@ -64,6 +64,9 @@
       // Check if the role is 'user' in localStorage
       const role = localStorage.getItem('user_role');
       const status = localStorage.getItem('status');
+      if(role==='admin'){
+        this.$router.push('/admindashboard');
+      }
       
       if (status === 'wait') {
         // Alert the user that the application is under process

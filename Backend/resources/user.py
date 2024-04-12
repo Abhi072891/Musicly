@@ -58,7 +58,7 @@ class UserLogin(Resource):
                     'user_id':user.id,
                     'username':user.username,
                     'name':user.name,
-                    'user_role':user.roles[0].name}, 200
+                    'user_role':user.roles[-1].name}, 200
         else:
             return {'message': 'Invalid username or password'}, 401
 
@@ -77,10 +77,10 @@ class AdminLogin(Resource):
                 access_token = create_access_token(identity=admin.id)
                 # return {'access_token': access_token}, 200
                 return {'access_token': access_token,
-                        'user_id':user.id,
-                        'username':user.username,
-                        'name':user.name,
-                        'user_role':user.roles[0].name}, 200
+                        'user_id':admin.id,
+                        'username':admin.username,
+                        'name':admin.name,
+                        'user_role':admin.roles[-1].name}, 200
         else:
             return {'message': 'Invalid username or password'}, 401
 
@@ -130,7 +130,7 @@ def creatorapplication(user_id):
 
 def creatorwaiting():
     wait_users = User.query.filter(User.status == "wait").all()
-    return [{'username':user.name,'user_id':user.user_id} for user in wait_users], 200
+    return [{'username':user.username,'user_id':user.id} for user in wait_users], 200
 
 def creatorapprove(user_id):
     user=User.query.get(user_id)
