@@ -18,10 +18,18 @@ import artistinfo from '@/components/artistinfo.vue';
 import playlist from '@/components/playlist.vue';
 
 import creatordashboard from '@/components/creator/creatordashboard.vue'
+import creatorapplication from '@/components/creator/creator-application.vue'
 import songupload from '@/components/creator/songupload.vue';
 import createalbum from '@/components/creator/createalbum.vue'
 import editalbum from '@/components/creator/editalbum.vue'
 import editsong from '@/components/creator/editsong.vue'
+
+import adminlogin from '@/components/admin/adminlogin.vue'
+import admindashboard from '@/components/admin/admindashboard.vue'
+import adminsongs from '@/components/admin/adminsongs.vue'
+import adminalbums from '@/components/admin/adminalbums.vue'
+import admincreators from '@/components/admin/admincreators.vue'
+import waitingcreatorapplication from '@/components/admin/waitingcreatorsapplication.vue'
 
 const routes = [
 
@@ -90,16 +98,21 @@ const routes = [
     name: 'playlist',
     component: playlist
   },
-  
+                // ###############Creator###########
+  {
+    path: '/creator',
+    name: 'creatordashboard',
+    component: creatordashboard
+  },
   {
     path: '/songupload',
     name: 'songupload',
     component: songupload,
   },
   {
-    path: '/creator',
-    name: 'creatordashboard',
-    component: creatordashboard
+    path: '/creator-application',
+    name: 'creator-application',
+    component: creatorapplication
   },
   {
     path: '/createalbum',
@@ -119,6 +132,37 @@ const routes = [
     props: true,
   },
 
+            //#################Admin##############
+  {
+    path: '/adminlogin',
+    name: 'adminlogin',
+    component: adminlogin,
+  },
+  {
+    path: '/admindashboard',
+    name: 'admindashboard',
+    component: admindashboard
+  },
+  {
+    path: '/adminsongs',
+    name: 'adminsongs',
+    component: adminsongs
+  },
+  {
+    path: '/adminalbums',
+    name: 'adminalbums',
+    component: adminalbums
+  },
+  {
+    path: '/admincreators',
+    name: 'admincreators',
+    component: admincreators
+  },
+  {
+    path: '/waiting-creator-application',
+    name: 'waiting-creator-application',
+    component: waitingcreatorapplication
+  },
 
 
 ]

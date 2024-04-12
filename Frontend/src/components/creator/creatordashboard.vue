@@ -55,10 +55,33 @@
       };
     },
     mounted() {
+      this.checkUserRole();
       this.fetchAlbums();
       this.fetchSongs();
     },
     methods: {
+      checkUserRole() {
+      // Check if the role is 'user' in localStorage
+      const role = localStorage.getItem('user_role');
+      const status = localStorage.getItem('status');
+      
+      if (status === 'wait') {
+        // Alert the user that the application is under process
+        alert('Your application is under process. Please wait for approval.');
+        // Redirect to home
+        this.$router.push('/home');
+      } else if (role === 'user') {
+        // Prompt the user to become a creator
+        const confirmPrompt = confirm('Would you like to become a creator?');
+        if (confirmPrompt) {
+          // Redirect to application form
+          this.$router.push('/creator-application');
+        } else {
+          // Redirect to home
+          this.$router.push('/home');
+        }
+      }
+    },
       fetchAlbums() {
         fetch(`http://127.0.0.1:5000/albumsbyuser/${this.creatorId}`)
         .then(respose => respose.json())

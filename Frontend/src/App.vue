@@ -8,7 +8,7 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <router-link class="nav-link" to="/login">Login</router-link>
+            <router-link class="nav-link" to="/adminlogin">Admin Login</router-link>
           </li>
           <li class="nav-item">
             <router-link class="nav-link" to="/creator">Creator</router-link>
@@ -27,6 +27,9 @@
           </li>
           <li class="nav-item">
             <router-link class="nav-link" to="/playlist">Playlists</router-link>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link btn btn-link" @click="logout">Logout</button>
           </li>
         </ul>
       </div>
@@ -72,6 +75,12 @@ export default {
         alert('Authentication failed. Please log in again.');
         this.$router.push('/login');
       });
+    },
+    logout() {
+      // Clear local storage
+      localStorage.clear();
+      // Redirect to the login page
+      this.$router.push('/login');
     }
   }
 };

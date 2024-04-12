@@ -27,13 +27,17 @@ CORS(
 
 
 # User registration and login endpoints
-from resources.user import UserRegister, UserLogin, AdminLogin, ProtectedResource, check_email_availability, check_username_availability
+from resources.user import UserRegister, UserLogin, AdminLogin, adminstats, ProtectedResource, check_email_availability, check_username_availability, creatorapplication, creatorapprove, creatorreject
+api.add_resource(ProtectedResource, '/jwt/testing')
 api.add_resource(UserRegister, '/register')
 api.add_resource(UserLogin, '/login')
 api.add_resource(AdminLogin, '/admin/login')
-api.add_resource(ProtectedResource, '/jwt/testing')
+app.add_url_rule('/adminstats','adminstats',(adminstats),methods=["GET"])
 app.add_url_rule('/check-email/<email>', "check_email_availability", (check_email_availability), methods=["GET"])
 app.add_url_rule('/check-username/<username>', "check_username_availability", (check_username_availability), methods=["GET"])
+app.add_url_rule('/creator-application/<int:user_id>', "creator_application", (creatorapplication), methods=["POST"])
+app.add_url_rule('/creator-approve/<int:user_id>', "creator_approve", (creatorapprove), methods=["GET"])
+app.add_url_rule('/creator-reject/<int:user_id>', "creator_reject", (creatorreject), methods=["GET"])
 
 
 # Song endpoints

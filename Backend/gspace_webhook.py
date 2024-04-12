@@ -7,7 +7,7 @@ from httplib2 import Http
 
 def reminder_webhook(username):
     """Google Chat incoming webhook quickstart."""
-    url = "https://chat.googleapis.com/v1/spaces/AAAACFecyKo/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=I1pcj1kGnlAEInVGDon6WTanut6Lu7S33VdC8KL0Ebo"
+    url = "https://chat.googleapis.com/v1/spaces/AAAA9i3xW2M/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=7Is6fRMLnuvNgYTxAJdPcWh7DUDRhC6XMotLaivVy3o"
     
     
     # reminder message for the user to visit the Music app
