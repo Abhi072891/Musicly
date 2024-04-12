@@ -70,6 +70,9 @@
         alert('Your application is under process. Please wait for approval.');
         // Redirect to home
         this.$router.push('/home');
+      } else if(status=='blc'){
+          alert("You have been Blacklisted from being a creator")
+          this.$router.push('/home')
       } else if (role === 'user') {
         // Prompt the user to become a creator
         const confirmPrompt = confirm('Would you like to become a creator?');

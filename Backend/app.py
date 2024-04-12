@@ -27,12 +27,16 @@ CORS(
 
 
 # User registration and login endpoints
-from resources.user import UserRegister, UserLogin, AdminLogin, adminstats, ProtectedResource, check_email_availability, check_username_availability, creatorapplication, creatorapprove, creatorreject
+from resources.user import UserRegister, UserLogin, AdminLogin, adminstats, ProtectedResource, check_email_availability, check_username_availability, creatorapplication, creatorapprove, creatorreject, allcreators, blacklist_creator, whitelist_creator
 api.add_resource(ProtectedResource, '/jwt/testing')
 api.add_resource(UserRegister, '/register')
 api.add_resource(UserLogin, '/login')
 api.add_resource(AdminLogin, '/admin/login')
 app.add_url_rule('/adminstats','adminstats',(adminstats),methods=["GET"])
+app.add_url_rule('/blacklist_creator/<int:user_id>', 'blacklist_creator', blacklist_creator, methods=["GET"])
+app.add_url_rule('/whitelist_creator/<int:user_id>', 'whitelist_creator', whitelist_creator, methods=["GET"])
+app.add_url_rule('/allcreators', 'allcreators', allcreators, methods=["GET"])
+
 app.add_url_rule('/check-email/<email>', "check_email_availability", (check_email_availability), methods=["GET"])
 app.add_url_rule('/check-username/<username>', "check_username_availability", (check_username_availability), methods=["GET"])
 app.add_url_rule('/creator-application/<int:user_id>', "creator_application", (creatorapplication), methods=["POST"])

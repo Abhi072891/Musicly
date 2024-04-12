@@ -91,6 +91,28 @@ def adminstats():
     album_count=Album.query.count()
     return {'user_count':user_count,'creator_count':creator_count,'song_count':song_count,'album_count':album_count}
 
+def allcreators():
+    creators=User.query.filter(or_(User.status == 'wlc', User.status == 'blc')).all()
+    if creators:
+        return [{'user_id':creator.id,'username':creator.username,'name':creator.name,'status':creator.status} for creator in creators] , 200
+    return {'msg':"error occured"}, 401
+
+def blacklist_creator(user_id):
+    user = User.query.get(user_id)
+    if user:
+        user.status = "blc"
+        db.session.commit()
+        return {'message': "Creator blacklisted successfully"}, 200
+    return {'message': "Error blacklisting creator"}, 401
+
+def whitelist_creator(user_id):
+    user = User.query.get(user_id)
+    if user:
+        user.status = "wlc"
+        db.session.commit()
+        return {'message': "Creator whitelisted successfully"}, 200
+    return {'message': "Error whitelisting creator"}, 401
+
 class ProtectedResource(Resource):
     @jwt_required()
     def get(self):
