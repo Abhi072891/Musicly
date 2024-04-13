@@ -51,13 +51,42 @@
     },
     mounted() {
       this.fetchSongs();
+      this.checkUser();
     },
     methods: {
+      checkUser(){
+        if (!localStorage.token) {
+          alert("Login again")
+          this.$router.push('/login');
+        }
+        fetch('http://127.0.0.1:5000/jwt/testing', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`
+          }
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Authentication failed');
+          }
+        })
+        .catch(error => {
+          alert('Please log in again.');
+          this.$router.push('/login');
+        });
+      },
       fetchSongs() {
-        fetch(`http://127.0.0.1:5000/genre/${this.genre}`)
+        fetch(`http://127.0.0.1:5000/genre/${this.genre}`,{
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`
+          }
+          })
           .then(response => response.json())
           .then(data => {
-            this.songs = data; // Update songs data with fetched data
+            this.songs = data; 
           })
           .catch(error => {
             console.error('Error fetching songs:', error);

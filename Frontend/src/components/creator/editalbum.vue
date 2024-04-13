@@ -24,21 +24,53 @@
   export default {
     data() {
       return {
-        editedAlbum: {}, // Album data for editing
-        songs: [], // Array of songs available for selection
-        selectedSongs: [], // Array to store selected songs
+        editedAlbum: {}, 
+        songs: [], 
+        selectedSongs: [], 
         artistNames: ''
       };
     },
     mounted() {
-      // Fetch album data and available songs
+      this.checkUser();
       this.fetchAlbum();
       this.fetchSongs();
     },
     methods: {
+      checkUser(){
+        if (!localStorage.token) {
+          alert("Login again")
+          this.$router.push('/login');
+        }
+        fetch('http://127.0.0.1:5000/jwt/testing', {
+          headers: {
+            method: 'GET',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`
+          }
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Authentication failed');
+          }
+        })
+        .catch(error => {
+          alert('Please log in again.');
+          this.$router.push('/login');
+        });
+        
+        if(localStorage.user_role==='user'){
+            alert("not a creator")
+            this.$router.push('/home')
+        }
+      },
       fetchAlbum() {
-        // Fetch album data from API
-        fetch(`http://127.0.0.1:5000/albums/${parseInt(this.$route.params.albumId)}`)
+        fetch(`http://127.0.0.1:5000/albums/${parseInt(this.$route.params.albumId)}`,{
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.token}`
+            }
+          })
           .then(response => response.json())
           .then(data => {
             this.editedAlbum = data;
@@ -48,8 +80,13 @@
           .catch(error => console.error('Error fetching album:', error));
       },
       fetchSongs() {
-        // Fetch available songs from API
-        fetch(`http://127.0.0.1:5000/songsbyuser/${parseInt(localStorage.user_id)}`)
+        fetch(`http://127.0.0.1:5000/songsbyuser/${parseInt(localStorage.user_id)}`,{
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.token}`
+            }
+          })
           .then(response => response.json())
           .then(data => {
             this.songs = data;
@@ -66,11 +103,11 @@
         this.editedAlbum.song_ids = this.selectedSongs;
         const artists = this.artistNames.split(',').map(artist => artist.trim());
         this.editedAlbum.artist_names = artists;
-        // console.log(artists)
         fetch(`http://127.0.0.1:5000/albums/${parseInt(this.editedAlbum.album_id)}/${parseInt(localStorage.user_id)}`, {
           method: 'PATCH',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`
           },
           body: JSON.stringify(this.editedAlbum)
         })
@@ -86,9 +123,9 @@
       }
     }
   };
-  </script>
+</script>
   
-  <style scoped>
-  /* Add component-specific styles here */
-  </style>
+<style scoped>
+
+</style>
   

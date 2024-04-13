@@ -23,19 +23,45 @@
       };
     },
     mounted() {
-      this.checkUserRole();
+      this.checkUser();
       this.fetchAlbums();
     },
     methods: {
-        checkUserRole() {
-        const role = localStorage.getItem('user_role');
-        if (role != 'admin') {
-            alert("Your are not a Admin!!")
-            this.$router.push('/home');
-        }
+        checkUser(){
+            if (!localStorage.token) {
+            alert("Login again")
+            this.$router.push('/login');
+            }
+            fetch('http://127.0.0.1:5000/jwt/testing', {
+            headers: {
+                method: 'GET',
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.token}`
+            }
+            })
+            .then(response => {
+            if (!response.ok) {
+                throw new Error('Authentication failed');
+            }
+            })
+            .catch(error => {
+            alert('Please log in again.');
+            this.$router.push('/login');
+            });
+
+            if(localStorage.user_role!="admin"){
+                alert('not a admin')
+                window.location.reload()
+            }
         },
         fetchAlbums() {
-            fetch(`http://127.0.0.1:5000/albums/0`)
+            fetch(`http://127.0.0.1:5000/albums/0`,{
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.token}`
+                }
+            })
             .then(respose => respose.json())
             .then(data => {
                 this.albums=data
@@ -48,23 +74,22 @@
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
-                        // 'Authorization': `Bearer ${localStorage.token}` 
+                        'Authorization': `Bearer ${localStorage.token}` 
                     }
                 })
                 .then(response => {
                     if (response.ok) {
                         alert("Album deleted successfully");
-                        // window.location.reload()
-                        setTimeout(() => {
-                            location.reload();
-                        }, 1000);
+                        window.location.reload()
                     } else {
                         alert("Failed to delete album");
+                        window.location.reload()
                     }
                 })
                 .catch(error => {
                     console.error('Error deleting album:', error);
                     alert("Failed to delete album");
+                    window.location.reload()
                 });
             }
         }

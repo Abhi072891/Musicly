@@ -6,14 +6,15 @@
             <div class="row">
                 <div v-for="(song, index) in sortedSongsByRating" :key="song.song_id" class="col-md-3" >
                     <div class="card">
-                        <h5 class="song-title card-header">{{ song.song_name }}</h5>
-                        <p class="card-text">
-                            <h6 style="display: inline;">Genre :</h6>{{ song.song_genre }} <br>                   
-                            Rating : {{ song.rating }}
-                        </p>
-                        <div class="card-footer">
-                            <router-link to="'/songinfo/' + song.song_id " class="btn btn-primary" style="margin-left: 30px;">Go to Song</router-link>
-                        </div>
+                      <img class="card-img-top" src="song.jpg" alt="Song">
+                      <h5 class="song-title card-header">{{ song.song_name }}</h5>
+                      <p class="card-text">
+                          <h6 style="display: inline;">Genre :</h6>{{ song.song_genre }} <br>                   
+                          Rating : {{ song.rating }}
+                      </p>
+                      <div class="card-footer">
+                          <router-link :to="'/songinfo/' + song.song_id " class="btn btn-primary" style="margin-left: 30px;">Go to Song</router-link>
+                      </div>
                     </div>
                 </div>
             </div>
@@ -25,14 +26,15 @@
             <div class="row">
                 <div v-for="(song, index) in sortedSongsByRating" :key="song.song_id" class="col-md-3" >
                     <div class="card">
-                        <h5 class="song-title card-header">{{ song.song_name }}</h5>
-                        <p class="card-text">
-                            <h6 style="display: inline;">Genre :</h6>{{ song.song_genre }} <br>                   
-                            Rating : {{ song.rating }}
-                        </p>
-                        <div class="card-footer">
-                            <router-link to="'/songinfo/' + song.song_id " class="btn btn-primary" style="margin-left: 30px;">Go to Song</router-link>
-                        </div>
+                      <img class="card-img-top" src="song.jpg" alt="Song">
+                      <h5 class="song-title card-header">{{ song.song_name }}</h5>
+                      <p class="card-text">
+                          <h6 style="display: inline;">Genre :</h6>{{ song.song_genre }} <br>                   
+                          Rating : {{ song.rating }}
+                      </p>
+                      <div class="card-footer">
+                          <router-link :to="'/songinfo/' + song.song_id " class="btn btn-primary" style="margin-left: 30px;">Go to Song</router-link>
+                      </div>
                     </div>
                 </div>
             </div>
@@ -44,12 +46,13 @@
             <div class="row">
                 <div v-for="(album, index) in topAlbumsBySeenCount" :key="album.id" class="col-md-3">
                     <div class="card">
-                        <h5 class="song-title card-header">{{ album.album_name }}</h5>
-                        <h6 >Artists : </h6>
-                        <p v-for="(artist, index) in album.artists" :key="index" class="card-text" style="display: inline;">{{ artist.name }}{{ index < album.artists.length - 1 ? ', ' : '' }}</p>
-                        <div class="card-footer">
-                            <router-link :to="'/albuminfo/' + album.album_id " class="btn btn-primary" style="margin-left: 30px;">Go to Album</router-link>
-                        </div>
+                      <img class="card-img-top" src="album.jpg" alt="Album">
+                      <h5 class="song-title card-header">{{ album.album_name }}</h5>
+                      <h6 >Artists : </h6>
+                      <p v-for="(artist, index) in album.artists" :key="index" class="card-text" style="display: inline;">{{ artist.name }}{{ index < album.artists.length - 1 ? ', ' : '' }}</p>
+                      <div class="card-footer">
+                          <router-link :to="'/albums/' + album.album_id " class="btn btn-primary" style="margin-left: 30px;">Go to Album</router-link>
+                      </div>
                     </div>
                 </div>
             </div>
@@ -61,12 +64,13 @@
             <div class="row">
                 <div v-for="(artist, index) in topArtistsBySeenCount" :key="artist.id" class="col-md-3">
                     <div class="card">
-                        <h5 class="song-title card-header">{{ artist.artist_name }}</h5>
-                        <h6 >Albums : </h6>
-                        <p v-for="(album, index) in artist.albums" :key="index" class="card-text" style="display: inline;">{{ album.name }}{{ index < artist.albums.length - 1 ? ', ' : '' }}</p>
-                        <div class="card-footer">
-                            <router-link :to="'/artistinfo/' + artist.artist_id " class="btn btn-primary" style="margin-left: 30px;">Go to Artist</router-link>
-                        </div>
+                      <img class="card-img-top" src="artist.jpg" alt="Artist">
+                      <h5 class="song-title card-header">{{ artist.artist_name }}</h5>
+                      <h6 >Albums : </h6>
+                      <p v-for="(album, index) in artist.albums" :key="index" class="card-text" style="display: inline;">{{ album.name }}{{ index < artist.albums.length - 1 ? ', ' : '' }}</p>
+                      <div class="card-footer">
+                          <router-link :to="'/artists/' + artist.artist_id " class="btn btn-primary" style="margin-left: 30px;">Go to Artist</router-link>
+                      </div>
                     </div>
                 </div>
             </div>
@@ -78,7 +82,9 @@
       <div class="genres-section">
         <h2>All Genres</h2>
         <div class="row">
-          <div v-for="genre in allGenres" :key="genre" class="list-group-item col-md-3" style="padding: 5px; margin: 5px;"><router-link :to="'/genre/'+ genre " class="btn btn-secondary">{{ genre }}</router-link> </div>
+          <div v-for="genre in allGenres" :key="genre" class="list-group-item col-md-3" style="padding: 5px; margin: 5px;">
+            <router-link :to="'/genre/'+ genre " class="btn btn-secondary">{{ genre }}</router-link> 
+          </div>
         </div>
       </div>
   
@@ -105,15 +111,31 @@
     },
     methods: {
       checkUser(){
-          if(localStorage.user_role==='admin'){
-            this.$router.push('/admindashboard')
+        if (!localStorage.token) {
+          alert("Login again")
+          this.$router.push('/login');
+        }
+        fetch('http://127.0.0.1:5000/jwt/testing', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`
           }
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Authentication failed');
+          }
+        })
+        .catch(error => {
+          alert('Please log in again.');
+          this.$router.push('/login');
+        });
+        if(localStorage.user_role==='admin'){
+          this.$router.push('/admindashboard')
+        }
       },
       fetchSongs() {
-        // if (!localStorage.token) {
-        //   this.$router.push('/login');
-        //   return; 
-        // }
         fetch('http://127.0.0.1:5000/songs/0', {
           headers: {
             'Content-Type': 'application/json',
@@ -145,10 +167,16 @@
           this.sortedSongsByPlaycount = [...this.allsongs].sort((a, b) => b.pcount - a.pcount);
         },
         fetchAlbums() {
-            fetch(`http://127.0.0.1:5000/albums/0`)
+          fetch(`http://127.0.0.1:5000/albums/0`,
+            {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.token}`
+              }
+            })
             .then(response => response.json())
             .then(data => {
-                // this.albums = data; // Set fetched albums data
                 this.topAlbumsBySeenCount= [...data].sort((a, b) => b.pcount - a.pcount);
             })
             .catch(error => {
@@ -156,10 +184,15 @@
             });
         },
         fetchArtists() {
-            fetch(`http://127.0.0.1:5000/artists/0`)
+            fetch(`http://127.0.0.1:5000/artists/0`,{
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.token}`
+              }
+            })
             .then(response => response.json())
             .then(data => {
-                // this.albums = data; // Set fetched albums data
                 this.topArtistsBySeenCount= [...data].sort((a, b) => b.pcount - a.pcount);
             })
             .catch(error => {

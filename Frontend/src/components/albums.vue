@@ -16,30 +16,22 @@
       <div class="row">
         <div class="col-md-4" v-for="album in filteredAlbums" :key="album.album_id">
           <div class="card" style="width: 18rem;">
-            <!-- <img class="card-img-top" src="/static/album.jpg" alt="Album"> -->
-            <img class="card-img-top" src="" alt="Album">
+            <img class="card-img-top" src="album.jpg" alt="Album">
             <div class="card-body">
               <h5 class="card-title title">{{ album.album_name }}</h5>
               <h6 style="display: inline;">Artists : </h6>
               <p v-for="(artist, index) in album.artists" :key="index" class="card-text" style="display: inline;">{{ artist.name }}{{ index < album.artists.length - 1 ? ', ' : '' }}</p>
               <br>
-              <h6 >Songs : </h6>
-              <!-- <p v-for="(song, index) in album.songs" :key="index" class="card-text">{{ song.song_name }}</p> -->
-              
-            <div v-if="album.songs.length > 0">
-                <h5>Songs in {{ album.album_name }}:</h5>
+              <h6 >Songs : </h6>             
+              <div v-if="album.songs.length > 0">
                 <ol>
                     <template v-if="album.songs.length <= 5">
                         <li v-for="(song, index) in album.songs" :key="index">
-                            <!-- <a href="/songinfo/{{ song.song_id }}/{{ user_id }}">{{ song.song_name }}</a>
-                            <br><audio :src="'/' + song.song_path" controls></audio> -->
                             {{ song.name }}
                         </li>
                     </template>
                     <template v-else>
                         <li v-for="(song, index) in album.songs.slice(0, 5)" :key="index">
-                            <!-- <a href="/songinfo/{{ song.song_id }}/{{ user_id }}">{{ song.song_name }}</a>
-                            <br><audio :src="'/' + song.song_path" controls></audio> -->
                             {{ song.name }}
                         </li>
                     </template>
@@ -65,13 +57,41 @@
       };
     },
     mounted() {
-      // Fetch albums data
+      this.checkUser();
       this.fetchAlbums();
     },
     methods: {
+      checkUser(){
+        if (!localStorage.token) {
+          alert("Login again")
+          this.$router.push('/login');
+        }
+        fetch('http://127.0.0.1:5000/jwt/testing', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`
+          }
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Authentication failed');
+          }
+        })
+        .catch(error => {
+          alert('Please log in again.');
+          this.$router.push('/login');
+        });
+      },
       fetchAlbums() {
         // Perform fetch request to get albums data
-        fetch(`http://127.0.0.1:5000/albums/0`)
+        fetch(`http://127.0.0.1:5000/albums/0`,{
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`
+          }
+          })
           .then(response => response.json())
           .then(data => {
             this.albums = data; // Set fetched albums data

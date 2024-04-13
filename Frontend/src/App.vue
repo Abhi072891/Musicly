@@ -8,12 +8,6 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <router-link class="nav-link" to="/adminlogin">Admin Login</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link" to="/creator">Creator</router-link>
-          </li>
-          <li class="nav-item">
             <router-link class="nav-link" to="/home">Home</router-link>
           </li>
           <li class="nav-item">
@@ -28,8 +22,14 @@
           <li class="nav-item">
             <router-link class="nav-link" to="/playlist">Playlists</router-link>
           </li>
+          <li class="nav-item" v-if="localStorage.user_role !== 'admin'">
+            <router-link class="nav-link" to="/creator">Creator</router-link>
+          </li>
           <li class="nav-item">
             <button class="nav-link btn btn-link" @click="logout">Logout</button>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link" to="/adminlogin">Admin Login</router-link>
           </li>
         </ul>
       </div>
@@ -43,7 +43,7 @@
 export default {
   data() {
     return {
-      
+      localStorage: localStorage
     };
   },
   mounted() {
@@ -72,7 +72,7 @@ export default {
       })
       .catch(error => {
         // Display alert and redirect to login page
-        alert('Authentication failed. Please log in again.');
+        alert('Please log in again.');
         this.$router.push('/login');
       });
     },

@@ -2,7 +2,6 @@
     <div class="container">
       <h1>Register</h1>
       <router-link to="/login" class="btn btn-secondary">Login</router-link>
-      <!-- <p v-if="text">{{ text }}</p> -->
       <form @submit.prevent="submitForm">
         <p>
           <label for="name">Name:</label><br>

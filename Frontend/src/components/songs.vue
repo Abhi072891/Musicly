@@ -49,16 +49,39 @@
       };
     },
     mounted() {
+      this.checkUser();
       this.fetchSongs();
     },
     methods: {
+      checkUser(){
+        if (!localStorage.token) {
+          alert("Login again")
+          this.$router.push('/login');
+        }
+        fetch('http://127.0.0.1:5000/jwt/testing', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`
+          }
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Authentication failed');
+          }
+        })
+        .catch(error => {
+          alert('Please log in again.');
+          this.$router.push('/login');
+        });
+      },
       fetchSongs() {
-
         if (!localStorage.token) {
           this.$router.push('/login');
           return; 
         }
         fetch('http://127.0.0.1:5000/songs/0', {
+          method:"GET",
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.token}`
@@ -87,25 +110,12 @@
         );
       },
       sortByRating() {
-        // Sort songs by rating in descending order
         this.filteredSongs = [...this.songs].sort((a, b) => b.rating - a.rating);
-        // this.filteredSongs=[...this.filteredSongs].sort((a, b) => b.rating - a.rating);
       },
       sortByPlaycount() {
-        // Sort songs by playcount in descending order
         this.filteredSongs = [...this.songs].sort((a, b) => b.pcount - a.pcount);
-        // this.filteredSongs=[...this.filteredSongs].sort((a, b) => b.pcount - a.pcount);
       },
     },
-    // computed: {
-    //   filteredSongs() {
-    //     const query = this.searchQuery.toLowerCase();
-    //     return this.songs.filter(song =>
-    //       song.song_name.toLowerCase().includes(query)
-    //     );
-    //   }
-    // },
-
   };
   </script>
   

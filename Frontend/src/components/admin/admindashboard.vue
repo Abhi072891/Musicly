@@ -2,7 +2,6 @@
     <div class="admin-dashboard">
       <h2>Admin Dashboard</h2>
       <div class="statistics">
-        <!-- <div class="box" @click="navigateToUsersPage"> -->
         <div class="box" >
           <h3>Total Users: {{ totalUsers }}</h3>
         </div>
@@ -33,13 +32,45 @@
       };
     },
     mounted() {
+      this.checkUser();
       this.fetchStatistics();
     },
     methods: {
+      checkUser(){
+        if (!localStorage.token) {
+          alert("Login again")
+          this.$router.push('/login');
+        }
+        fetch('http://127.0.0.1:5000/jwt/testing', {
+          headers: {
+            method: 'GET',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`
+          }
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Authentication failed');
+          }
+        })
+        .catch(error => {
+          alert('Please log in again.');
+          this.$router.push('/login');
+        });
+
+        if(localStorage.user_role!="admin"){
+            alert('not a admin')
+            window.location.reload()
+        }
+      },
       fetchStatistics() {
-        // Implement fetch requests to get statistics data
-        // Assign fetched data to the corresponding data properties
-        fetch(`http://127.0.0.1:5000/adminstats`)
+        fetch(`http://127.0.0.1:5000/adminstats`,{
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`
+          }
+        })
         .then(respose => respose.json())
         .then(data => {
             this.totalUsers = data.user_count
@@ -49,9 +80,6 @@
         })
         .catch(error => console.log(error))
       },
-    //   navigateToUsersPage() {
-    //     this.$router.push('/users');
-    //   },
       navigateToCreatorsPage() {
         this.$router.push('/admincreators');
       },

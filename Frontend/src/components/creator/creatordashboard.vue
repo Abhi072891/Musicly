@@ -55,41 +55,70 @@
       };
     },
     mounted() {
-      this.checkUserRole();
+      this.checkUser();
       this.fetchAlbums();
       this.fetchSongs();
     },
     methods: {
-      checkUserRole() {
-      // Check if the role is 'user' in localStorage
-      const role = localStorage.getItem('user_role');
-      const status = localStorage.getItem('status');
-      if(role==='admin'){
-        this.$router.push('/admindashboard');
-      }
-      
-      if (status === 'wait') {
-        // Alert the user that the application is under process
-        alert('Your application is under process. Please wait for approval.');
-        // Redirect to home
-        this.$router.push('/home');
-      } else if(status=='blc'){
-          alert("You have been Blacklisted from being a creator")
-          this.$router.push('/home')
-      } else if (role === 'user') {
-        // Prompt the user to become a creator
-        const confirmPrompt = confirm('Would you like to become a creator?');
-        if (confirmPrompt) {
-          // Redirect to application form
-          this.$router.push('/creator-application');
-        } else {
-          // Redirect to home
-          this.$router.push('/home');
+      checkUser() {
+        if (!localStorage.token) {
+          // Redirect to login page if token is not present
+          this.$router.push('/login');
+          return;
         }
-      }
-    },
+
+        // Fetch request to check if token is valid
+        fetch('http://127.0.0.1:5000/jwt/testing', {
+          headers: {
+            method: 'GET',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`
+          }
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Authentication failed');
+          }
+        })
+        .catch(error => {
+          // Display alert and redirect to login page
+          alert('Please log in again.');
+          this.$router.push('/login');
+        });
+
+        const role = localStorage.getItem('user_role');
+        const status = localStorage.getItem('status');
+        if(role==='admin'){
+          this.$router.push('/admindashboard');
+        }
+        if (role === 'user') {
+          // Prompt the user to become a creator
+          const confirmPrompt = confirm('Would you like to become a creator?');
+          if (confirmPrompt) {
+            // Redirect to application form
+            this.$router.push('/creator-application');
+          } else {
+            this.$router.push('/home');
+          }
+        }
+      
+        if (status === 'wait') {
+          // Alert the user that the application is under process
+          alert('Your application is under process. Please wait for approval.');
+          this.$router.push('/home');
+        } else if(status=='blc'){
+            alert("You have been Blacklisted from being a creator")
+            this.$router.push('/home')
+        }  
+      },
       fetchAlbums() {
-        fetch(`http://127.0.0.1:5000/albumsbyuser/${this.creatorId}`)
+        fetch(`http://127.0.0.1:5000/albumsbyuser/${this.creatorId}`,{
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`
+          }
+        })
         .then(respose => respose.json())
         .then(data => {
             this.albums=data
@@ -97,7 +126,13 @@
         .catch(error => console.log(error))
       },
       fetchSongs() {
-        fetch(`http://127.0.0.1:5000/songsbyuser/${this.creatorId}`)
+        fetch(`http://127.0.0.1:5000/songsbyuser/${this.creatorId}`,{
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`
+          }
+        })
         .then(respose => respose.json())
         .then(data => {
             this.songs=data
@@ -122,54 +157,50 @@
       },
       deleteSong(songId) {
         if (confirm("Are you sure you want to delete this song?")) {
-            fetch(`http://127.0.0.1:5000/songs/${parseInt(songId)}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Song deleted successfully:', data);
-                alert("Song deleted successfully");
-                    setTimeout(() => {
-                        location.reload();
-                    }, 1000);
-            })
-            .catch(error => {
-                console.error('Error deleting song:', error);
-            });
+          fetch(`http://127.0.0.1:5000/songs/${parseInt(songId)}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.token}` 
+            }
+          })
+          .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+          })
+          .then(data => {
+            console.log('Song deleted successfully:', data);
+            alert("Song deleted successfully");
+            location.reload();
+          })
+          .catch(error => {
+              console.error('Error deleting song:', error);
+          });
         }
       },
       deleteAlbum(albumId) {
         if (confirm("Are you sure you want to delete this album?")) {
-            fetch(`http://127.0.0.1:5000/albums/${parseInt(albumId)}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    // 'Authorization': `Bearer ${localStorage.token}` 
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert("Album deleted successfully");
-                    // window.location.reload()
-                    setTimeout(() => {
-                        location.reload();
-                    }, 1000);
-                } else {
-                    alert("Failed to delete album");
-                }
-            })
-            .catch(error => {
-                console.error('Error deleting album:', error);
-                alert("Failed to delete album");
-            });
+          fetch(`http://127.0.0.1:5000/albums/${parseInt(albumId)}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.token}` 
+            }
+          })
+          .then(response => {
+            if (response.ok) {
+              alert("Album deleted successfully");
+              window.location.reload()
+            } else{
+              alert("Failed to delete album");
+            }
+          })
+          .catch(error => {
+            console.error('Error deleting album:', error);
+            alert("Failed to delete album");
+          });
         }
       }
     }

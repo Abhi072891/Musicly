@@ -49,13 +49,38 @@
         text: ''
       };
     },
+    mounted(){
+      this.checkUser();
+    },
     methods: {
+      checkUser(){
+        if (!localStorage.token) {
+          alert("Login again")
+          this.$router.push('/login');
+        }
+        fetch('http://127.0.0.1:5000/jwt/testing', {
+          headers: {
+            method: 'GET',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`
+          }
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Authentication failed');
+          }
+        })
+        .catch(error => {
+          alert('Please log in again.');
+          this.$router.push('/login');
+        });
+      },
       submitForm() {
-        // Send POST request
         fetch(`http://127.0.0.1:5000/creator-application/${this.userId}`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`
           },
           body: JSON.stringify(this.formData)
         })
@@ -63,15 +88,14 @@
           if (!response.ok) {
             throw new Error('Network response was not ok');
           }
-          // Show alert and change localStorage status to 'wait'
           alert('Request sent successfully');
           localStorage.setItem('status', 'wait');
-          // Redirect to home
           this.$router.push('/home');
         })
         .catch(error => {
+          alert(error)
+          window.location.reload()
           console.error('Error submitting form:', error);
-          // Handle errors
         });
       }
     }
@@ -79,6 +103,6 @@
 </script>
 
 <style scoped>
-/* Your scoped styles */
+
 </style>
   

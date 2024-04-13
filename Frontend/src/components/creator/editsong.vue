@@ -38,7 +38,7 @@
     </div>
   </template>
   
-  <script>
+<script>
   export default {
     data() {
       return {
@@ -56,13 +56,47 @@
       };
     },
     mounted() {
+      this.checkUser();
       this.fetchSongDetails();
       this.fetchAlbums();
     },
     methods: {
+      checkUser(){
+        if (!localStorage.token) {
+          alert("Login again")
+          this.$router.push('/login');
+        }
+        fetch('http://127.0.0.1:5000/jwt/testing', {
+          headers: {
+            method: 'GET',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`
+          }
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Authentication failed');
+          }
+        })
+        .catch(error => {
+          alert('Please log in again.');
+          this.$router.push('/login');
+        });
+        
+        if(localStorage.user_role==='user'){
+            alert("not a creator")
+            this.$router.push('/home')
+        }
+      },
       fetchSongDetails() {
         const song_id = parseInt(this.$route.params.songId);
-        fetch(`http://127.0.0.1:5000/songs/${song_id}`)
+        fetch(`http://127.0.0.1:5000/songs/${song_id}`,{
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`
+          }
+        })
           .then(response => response.json())
           .then(data => {
             this.editedSong.songname = data.song_name;
@@ -74,8 +108,13 @@
           .catch(error => console.error('Error fetching song details:', error));
       },
       fetchAlbums() {
-        // Fetch albums for the dropdown
-        fetch(`http://127.0.0.1:5000/albumsbyuser/${this.user_id}`)
+        fetch(`http://127.0.0.1:5000/albumsbyuser/${this.user_id}`,{
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`
+          }
+        })
           .then(response => response.json())
           .then(data => {
             this.albums = data;
@@ -83,9 +122,8 @@
           .catch(error => console.error('Error fetching albums:', error));
       },
       toggleNewAlbumInput() {
-        // Toggle display of the new album input field
         if (this.editedSong.album === 'new') {
-          this.newAlbumName = ''; // Clear input field
+          this.newAlbumName = ''; 
         }
       },
       updateSong() {
@@ -102,7 +140,8 @@
         fetch(`http://127.0.0.1:5000/songs/${this.user_id}/${song_id}`, {
           method: 'PATCH',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`
           },
           body: JSON.stringify(formData)
         })
@@ -111,16 +150,17 @@
             alert("Song updated successfully")
             this.$router.push(`/creator`);
           } else {
-            console.error('Error updating song');
+            alert("couldn't update the song")
+            window.location.reload()
           }
         })
         .catch(error => console.error('Error updating song:', error));
       }
     }
   };
-  </script>
+</script>
   
-  <style scoped>
-  /* Add component-specific styles here */
-  </style>
+<style scoped>
+
+</style>
   

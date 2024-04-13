@@ -1,29 +1,28 @@
 <template>
-    <div class="container">
-      <h2 style="text-align: center; margin: 50px;"> {{ album.album_name }} </h2>
-      <br>
-      
-      <h5>Artists of Album {{ album.album_name }}: </h5>
-      <ol>
-        <li v-for="artist in album.artists" :key="artist.id">
+  <div class="container">
+    <h2 class="text-center mt-5 mb-4">{{ album.album_name }}</h2>
+
+    <div class="mb-5">
+      <h5>Artists of Album <span class="font-italic">{{ album.album_name }}</span>:</h5>
+      <ol class="list-group">
+        <li v-for="artist in album.artists" :key="artist.id" class="list-group-item">
           <router-link :to="'/artists/' + artist.id">{{ artist.name }}</router-link>
-            <!-- {{ artist.name }} -->
         </li>
       </ol>
-      <br><br>
-  
-      <h5>Songs in {{ album.album_name }}: </h5>
-      <ol>
-        <li v-for="song in album.songs" :key="song.id">
-          <router-link :to="'/songinfo/' + song.id">{{ song.name }}</router-link>
-          <!-- {{ song.name }} -->
-          <!-- <br><audio :src="'/' + song.song_path" controls></audio> -->
-          <br><audio :src="'http://127.0.0.1:5000/' + song.path" style="width: 600px;"controls></audio>
-        </li>
-      </ol>
-      <br>
     </div>
-  </template>
+
+    <div>
+      <h5>Songs in <span class="font-italic">{{ album.album_name }}</span>:</h5>
+      <ol>
+        <li v-for="song in album.songs" :key="song.id" class="mb-4">
+          <router-link :to="'/songinfo/' + song.id">{{ song.name }}</router-link>
+          <audio :src="'http://127.0.0.1:5000/' + song.path" class="ml-3" controls></audio>
+        </li>
+      </ol>
+    </div>
+  </div>
+</template>
+
   
   <script>
   export default {
@@ -40,20 +39,44 @@
       };
     },
     mounted() {
-      // Fetch album data
+      this.checkUser();
       this.fetchAlbum();
     },
     methods: {
+      checkUser(){
+        if (!localStorage.token) {
+          alert("Login again")
+          this.$router.push('/login');
+        }
+        fetch('http://127.0.0.1:5000/jwt/testing', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`
+          }
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Authentication failed');
+          }
+        })
+        .catch(error => {
+          alert('Please log in again.');
+          this.$router.push('/login');
+        });
+      },
       fetchAlbum() {
-        // Extract album_id and user_id from route params
         const albumId = parseInt(this.$route.params.albumId);
-        // const userId = this.$route.params.user_id;
-  
-        // Perform fetch request to get album data
-        fetch(`http://127.0.0.1:5000/albums/${albumId}`)
+        fetch(`http://127.0.0.1:5000/albums/${albumId}`,{
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`
+          }
+          })
           .then(response => response.json())
           .then(data => {
-            this.album = data; // Set fetched album data
+            this.album = data; 
           })
           .catch(error => {
             console.error('Error fetching album data:', error);
@@ -63,7 +86,7 @@
   };
   </script>
   
-  <style scoped>
-  /* Add your scoped styles here */
-  </style>
+<style scoped>
+
+</style>
   

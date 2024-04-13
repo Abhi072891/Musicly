@@ -42,17 +42,6 @@
     },
     methods: {
       submitForm() {
-        // Handle form submission
-        console.log('Form submitted');
-        // You can perform form validation here before submission
-        // Example:
-        // if (this.formData.username === '') {
-        //   this.formErrors.username = ['Username is required'];
-        //   return;
-        // }
-        // Simulate form submission for demonstration
-        // Replace this with actual form submission using fetch or axios
-        // Example:
         fetch('http://127.0.0.1:5000/login', {
           method: 'POST',
           body: JSON.stringify(this.formData),
@@ -71,7 +60,7 @@
           localStorage.setItem('token', data.access_token)
           localStorage.setItem('user_id',data.user_id)
           localStorage.setItem('user_role',data.user_role)
-          localStorage.setItem('logged_id',"yes")
+          localStorage.setItem('user_status',data.status)
           this.$router.push({name : 'home'})
         })
         .catch(error => {

@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <a href="/creator/{{user_id}}" class="btn btn-secondary">Go back</a>
+    <router-link to="/creator" class="btn btn-secondary">Go back</router-link>
     <h1 style="color: #0056b3;">Upload a Song</h1>
     <form @submit.prevent="submitForm" enctype="multipart/form-data">
       <div class="form-group">
@@ -62,40 +62,72 @@ export default {
     };
   },
   mounted() {
-    // Fetch albums data
+    this.checkUser();
     this.fetchAlbums();
   },
   methods: {
+    checkUser(){
+        if (!localStorage.token) {
+          alert("Login again")
+          this.$router.push('/login');
+        }
+        fetch('http://127.0.0.1:5000/jwt/testing', {
+          headers: {
+            method: 'GET',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`
+          }
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Authentication failed');
+          }
+        })
+        .catch(error => {
+          alert('Please log in again.');
+          this.$router.push('/login');
+        });
+
+        if(localStorage.user_role==='user'){
+            alert("not a creator")
+            this.$router.push('/home')
+        }
+    },
     toggleAlbumInput() {
       // Logic for toggling album input
     },
     handleFileChange(event) {
-      // Update formData with selected file
       this.formData.songfile = event.target.files[0];
     },
     fetchAlbums() {
-      // Fetch albums data from backend
-      fetch(`http://127.0.0.1:5000/albums/0`)
+      fetch(`http://127.0.0.1:5000/albums/0`,{
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`
+          }
+        })
         .then(response => response.json())
         .then(data => {
-          this.albums = data; // Set fetched albums data
+          this.albums = data; 
         })
         .catch(error => {
           console.error('Error fetching albums data:', error);
         });
     },
     submitForm() {
-      // Create FormData object to handle file uploads
       let formData = new FormData();
       for (let key in this.formData) {
         formData.append(key, this.formData[key]);
       }
-
-      // Submit form data including file
       fetch(`http://127.0.0.1:5000/songs/${this.user_id}`, {
-        method: 'POST',
-        body: formData
-      })
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`
+          }
+        })
         .then(response => {
           if (response.ok) {
             this.$router.push({ name: 'creatordashboard' });
@@ -104,12 +136,12 @@ export default {
           }
         })
         .then(data => {
-          console.log('Song uploaded successfully:', data);
-          // Handle success response
+          alert('Song uploaded successfully')
+          this.$router.push('/creator')
         })
         .catch(error => {
-          console.error('Error uploading song:', error);
-          // Handle error response
+          alert('couldnot upload the song')
+          window.location.reload()
         });
     }
   }

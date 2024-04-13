@@ -16,7 +16,7 @@
       <div class="row">
         <div class="col-md-4" v-for="artist in filteredArtists" :key="artist.artist_id">
           <div class="card" style="width: 18rem;">
-            <img class="card-img-top" src="" alt="Artist">
+            <img class="card-img-top" src="artist.jpg" alt="Artist">
             <div class="card-body">
               <h5 class="card-title title">{{ artist.artist_name }}</h5>
               <h6 style="display: inline;">Albums : </h6>
@@ -24,22 +24,20 @@
               <br>
 
             <div v-if="artist.songs.length > 0">
-                <h5>Songs by {{ artist.artist_name }}:</h5>
-                <ol>
-                    <template v-if="artist.songs.length <= 5">
-                        <li v-for="(song, index) in artist.songs" :key="index">
-                            {{ song.name }}
-                        </li>
-                    </template>
-                    <template v-else>
-                        <li v-for="(song, index) in artist.songs.slice(0, 5)" :key="index">
-                            {{ song.name }}
-                        </li>
-                    </template>
-                </ol>
+              <h5>Songs by {{ artist.artist_name }}:</h5>
+              <ol>
+                <template v-if="artist.songs.length <= 5">
+                  <li v-for="(song, index) in artist.songs" :key="index">
+                      {{ song.name }}
+                  </li>
+                </template>
+                <template v-else>
+                  <li v-for="(song, index) in artist.songs.slice(0, 5)" :key="index">
+                      {{ song.name }}
+                  </li>
+                </template>
+              </ol>
             </div>
-
-              
               <br><br>
               <router-link :to="'/artists/' + artist.artist_id" class="btn btn-primary">Go to Artist</router-link>
             </div>
@@ -58,13 +56,41 @@
       };
     },
     mounted() {
-      // Fetch artists data
+      this.checkUser();
       this.fetchArtists();
     },
     methods: {
+      checkUser(){
+        if (!localStorage.token) {
+          alert("Login again")
+          this.$router.push('/login');
+        }
+        fetch('http://127.0.0.1:5000/jwt/testing', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`
+          }
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Authentication failed');
+          }
+        })
+        .catch(error => {
+          alert('Please log in again.');
+          this.$router.push('/login');
+        });
+      },
       fetchArtists() {
         // Perform fetch request to get artists data
-        fetch(`http://127.0.0.1:5000/artists/0`)
+        fetch(`http://127.0.0.1:5000/artists/0`,{
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`
+          }
+          })
           .then(response => response.json())
           .then(data => {
             this.artists = data; // Set fetched artists data

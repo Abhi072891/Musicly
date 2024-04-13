@@ -25,13 +25,10 @@
     },
     methods: {
       login() {
-        // Perform login authentication here, e.g., sending a POST request to the server
         const credentials = {
           username: this.username,
           password: this.password
         };
-  
-        // Example of sending a POST request using fetch
         fetch('http://127.0.0.1:5000/admin/login', {
           method: 'POST',
           headers: {
@@ -43,13 +40,12 @@
           if (!response.ok) {
             throw new Error('Login failed');
           }
-          // Redirect to admin dashboard upon successful login
           this.$router.push('/admindashboard');
         })
         .catch(error => {
           console.error('Login failed:', error);
-          // Show an alert or error message to the user
           alert('Login failed. Please check your credentials and try again.');
+          window.location.reload();
         });
       }
     }

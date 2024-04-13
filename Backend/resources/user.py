@@ -121,12 +121,14 @@ class ProtectedResource(Resource):
         return {'message': 'Protected resource'}, 200
 
 def creatorapplication(user_id):
+    parser.add_argument('password', type=str, required=True, help='Password is required')
+    args = parser.parse_args()
     user=User.query.get(user_id)
-    if user:
+    if user and user.check_password(args['password']):
         user.status="wait"
         db.session.commit()
         return {'message':"application for creator successful"}, 200
-    return {'message':"error in application"}, 401
+    return {'message':"wrong password"}, 401
 
 def creatorwaiting():
     wait_users = User.query.filter(User.status == "wait").all()
