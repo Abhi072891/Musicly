@@ -2,6 +2,9 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 from flask_jwt_extended import get_jwt_identity
+from sqlalchemy import DateTime
+from sqlalchemy.sql import func
+
 
 db = SQLAlchemy()
 
@@ -24,7 +27,6 @@ album_artist_association = db.Table('album_artist_association',
 
 class Song(db.Model):
     __tablename__ = 'Songs'
-    user_id = db.Column(db.Integer)
     song_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     song_name = db.Column(db.String(100), unique=True, nullable=False, index=True)
     song_genre = db.Column(db.String(100))
@@ -32,6 +34,8 @@ class Song(db.Model):
     song_path = db.Column(db.String(200))
     rating = db.Column(db.Integer)
     pcount = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=func.now())
 
     # Define the many-to-many relationship with albums
     albums = db.relationship('Album', secondary=song_album_association, backref=db.backref('songs', lazy='dynamic'))
@@ -85,10 +89,11 @@ class Artist(db.Model):
     
 class Album(db.Model):
     __tablename__ = 'Albums'
-    user_id = db.Column(db.Integer)
     album_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     album_name = db.Column(db.String(100), nullable=False, index=True)
     rcount= db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=func.now())
 
     def __repr__(self):
         return f"<Album(album_name='{self.album_name}')>"
@@ -109,6 +114,7 @@ class Playlist(db.Model):
     playlist_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, nullable=False)
     playlist_name = db.Column(db.String(), nullable=False)
+    created_at = db.Column(db.DateTime, default=func.now())
 
 class PlaylistContent(db.Model):
     __tablename__ = 'PlaylistContents'
@@ -149,6 +155,7 @@ class User(db.Model):
     password_hash = db.Column(db.String(100), nullable=False)
     roles = db.relationship('Role', secondary=user_role_association, backref=db.backref('users', lazy='dynamic'))
     status = db.Column(db.String(), default='0')
+    login_at = db.Column(db.DateTime, default=func.now())
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)

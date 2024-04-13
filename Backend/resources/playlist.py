@@ -10,6 +10,7 @@ playlist_fields = {
 }
 
 class PlaylistResource(Resource):
+    @jwt_required()
     @marshal_with(playlist_fields)
     def get(self, user_id, pl_id):
         if pl_id==0:
@@ -19,6 +20,7 @@ class PlaylistResource(Resource):
         return playlists
 
     @marshal_with(playlist_fields)
+    @jwt_required()
     def post(self, id):
         user_id=id
         parser = reqparse.RequestParser()
@@ -46,6 +48,7 @@ class PlaylistResource(Resource):
         return Playlist.query.get(pl_id), 201
 
     @marshal_with(playlist_fields)
+    @jwt_required()
     def patch(self, id):
         pl_id=id
         parser = reqparse.RequestParser()
@@ -60,7 +63,7 @@ class PlaylistResource(Resource):
         else:
             return {'message': 'Playlist not found'}, 404
 
-
+    @jwt_required()
     def delete(self, id):
         pl_id=id
         playlist = Playlist.query.get(pl_id)
@@ -76,7 +79,7 @@ class PlaylistResource(Resource):
 
 
         #---------------Custom functions------------#
-
+@jwt_required()
 def addsongtopl(pl_id,song_id,):
     data=PlaylistContent.query.filter_by(song_id=song_id, playlist_id=pl_id).first()
     if not data:
@@ -85,6 +88,7 @@ def addsongtopl(pl_id,song_id,):
         db.session.commit()
     return {'message': 'Song added to playlist'}
 
+@jwt_required()
 def removesongfrompl(pl_id,song_id):
     data=PlaylistContent.query.filter_by(song_id=song_id, playlist_id=pl_id).first()
     if data:
@@ -92,6 +96,7 @@ def removesongfrompl(pl_id,song_id):
         db.session.commit()
     return {'message': 'Song removed from playlist'}
 
+@jwt_required()
 def showpl(pl_id):
     plsongs=[]
     plcontent=PlaylistContent.query.filter_by(playlist_id=pl_id).all()

@@ -63,19 +63,19 @@ class UserLogin(Resource):
             return {'message': 'Invalid username or password'}, 401
 
 class AdminLogin(Resource):
+    @jwt_required()
+    @roles_required(["admin"])
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('username', type=str, required=True, help='Username is required')
         parser.add_argument('password', type=str, required=True, help='Password is required')
         args = parser.parse_args()
 
-        # admin = User.query.filter_by(username=args['username'], role='admin').first()
         admin = User.query.filter_by(username=args['username']).first()
         role = Role.query.get(3)
         if admin and (role in admin.roles):
             if admin and admin.check_password(args['password']):
                 access_token = create_access_token(identity=admin.id)
-                # return {'access_token': access_token}, 200
                 return {'access_token': access_token,
                         'user_id':admin.id,
                         'username':admin.username,
@@ -84,6 +84,8 @@ class AdminLogin(Resource):
         else:
             return {'message': 'Invalid username or password'}, 401
 
+@jwt_required()
+@roles_required(["admin"])
 def adminstats():
     user_count=User.query.count()
     creator_count=User.query.filter(or_(User.status == 'wlc', User.status == 'blc')).count()
@@ -91,12 +93,16 @@ def adminstats():
     album_count=Album.query.count()
     return {'user_count':user_count,'creator_count':creator_count,'song_count':song_count,'album_count':album_count}
 
+@jwt_required()
+@roles_required(["admin"])
 def allcreators():
     creators=User.query.filter(or_(User.status == 'wlc', User.status == 'blc')).all()
     if creators:
         return [{'user_id':creator.id,'username':creator.username,'name':creator.name,'status':creator.status} for creator in creators] , 200
     return {'msg':"error occured"}, 401
 
+@jwt_required()
+@roles_required(["admin"])
 def blacklist_creator(user_id):
     user = User.query.get(user_id)
     if user:
@@ -105,6 +111,8 @@ def blacklist_creator(user_id):
         return {'message': "Creator blacklisted successfully"}, 200
     return {'message': "Error blacklisting creator"}, 401
 
+@jwt_required()
+@roles_required(["admin"])
 def whitelist_creator(user_id):
     user = User.query.get(user_id)
     if user:
@@ -120,6 +128,7 @@ class ProtectedResource(Resource):
         print(data)
         return {'message': 'Protected resource'}, 200
 
+@jwt_required()
 def creatorapplication(user_id):
     parser.add_argument('password', type=str, required=True, help='Password is required')
     args = parser.parse_args()
@@ -130,10 +139,14 @@ def creatorapplication(user_id):
         return {'message':"application for creator successful"}, 200
     return {'message':"wrong password"}, 401
 
+@jwt_required()
+@roles_required(["admin"])
 def creatorwaiting():
     wait_users = User.query.filter(User.status == "wait").all()
     return [{'username':user.username,'user_id':user.id} for user in wait_users], 200
 
+@jwt_required()
+@roles_required(["admin"])
 def creatorapprove(user_id):
     user=User.query.get(user_id)
     if user:
@@ -144,7 +157,8 @@ def creatorapprove(user_id):
         return {'message':"become creator successful"}, 200
     return {'message':"error in approving "}, 401
 
-
+@jwt_required()
+@roles_required(["admin"])
 def creatorreject(user_id):
     user=User.query.get(user_id)
     if user:

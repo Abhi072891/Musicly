@@ -4,15 +4,9 @@ from sqlalchemy import func
 from model import db, Album, Song, Artist
 from cache import cache
 
-# Define the fields for marshaling album data
-album_fields = {
-    'album_id': fields.Integer,
-    'album_name': fields.String,
-    'rcount': fields.Integer,
-    'user_id': fields.Integer
-}
 
 class AlbumResource(Resource):
+    @jwt_required()
     @cache.cached(timeout=300, query_string=True)
     def get(self, id):
         album_id=id
@@ -29,8 +23,8 @@ class AlbumResource(Resource):
         else:
             return {'message': 'Album not found'}, 404
         
-
-    # @marshal_with(album_fields)
+    @jwt_required()
+    @roles_required(["creator","admin"])
     def post(self, id):
         cache.clear()
         user_id=id
@@ -72,7 +66,8 @@ class AlbumResource(Resource):
         db.session.commit()
         return album.serialize(), 201
 
-    # @marshal_with(album_fields)
+    @jwt_required()
+    @roles_required(["creator","admin"])
     def patch(self, album_id, user_id):
         cache.clear()
         album = Album.query.get(album_id)
@@ -85,8 +80,6 @@ class AlbumResource(Resource):
             song_ids = request.json.get('song_ids', [])
             if song_ids:
                 album.songs = Song.query.filter(Song.song_id.in_(song_ids)).all()
-                # album.songs.extend(songs)
-                # print(album.songs)
             else:
                 album.songs=[]
 
@@ -94,20 +87,19 @@ class AlbumResource(Resource):
             artist_names = request.json.get('artist_names', [])
             if artist_names:
                 album.artists=[]
-                # artists = []
                 for artist_name in artist_names:
                     artist = Artist.query.filter(func.lower(Artist.artist_name) == func.lower(artist_name)).first()
                     if not artist:
                         artist = Artist(artist_name=artist_name, scount=0, user_id=user_id)
                         db.session.add(artist)
                     album.artists.append(artist)
-                # album.artists.extend(artists)
-
             db.session.commit()
             return album.serialize()
         else:
             return {'message': 'Album not found'}, 404
 
+    @jwt_required()
+    @roles_required(["creator","admin"])
     def delete(self, id):
         cache.clear()
         album_id=id
@@ -127,6 +119,8 @@ class AlbumResource(Resource):
             return {'message': 'Album not found'}, 404
         
 
+@jwt_required()
+@roles_required(["creator","admin"])
 def removesongfromalbum(album_id,song_id):
     cache.clear()
     song=Song.query.get(song_id)
@@ -135,6 +129,8 @@ def removesongfromalbum(album_id,song_id):
     db.session.commit()
     return {'message':'Song removed from album'}
 
+@jwt_required()
+@roles_required(["creator","admin"])
 def addsongtoalbum(album_id,song_id):
     cache.clear()
     song = Song.query.get(song_id)
@@ -146,6 +142,8 @@ def addsongtoalbum(album_id,song_id):
             return f'Song "{song.song_name}" added to album "{album.album_name}" successfully'
     return abort(400,{'message':'no update'})
 
+@jwt_required()
+@roles_required(["creator","admin"])
 def albumsbyuser(user_id):
     if int(user_id)==0:
         abort(404)

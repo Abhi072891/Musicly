@@ -3,16 +3,9 @@ from flask import request, abort
 from sqlalchemy import func
 from model import db, Song, Artist
 
-# Define the fields for marshaling artist data
-artist_fields = {
-    'artist_id': fields.Integer,
-    'artist_name': fields.String,
-    'scount': fields.Integer,
-    'user_id': fields.Integer
-}
 
 class ArtistResource(Resource):
-    # @marshal_with(artist_fields)
+    @cache.cached(timeout=300, query_string=True)
     def get(self, id):
         artist_id=id
         if artist_id==0:
@@ -26,6 +19,12 @@ class ArtistResource(Resource):
         else:
             return {'message': 'artist not found'}, 404
         
+
+
+//############not used anywhere####
+
+    @jwt_required()
+    @roles_required(["creator","admin"])
     def delete(self, id):
         artist_id=id
         artist = Artist.query.get(artist_id)

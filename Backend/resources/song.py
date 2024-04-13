@@ -8,37 +8,9 @@ import os
 from app import app
 from cache import cache
 
-# import os
-# from app import app
-
-
-song_fields = {
-    "song_id": fields.Integer,
-    "song_name": fields.String,
-    "song_genre": fields.String,
-    "song_lyrics": fields.String,
-    "song_path": fields.String,
-    "rating": fields.Integer,
-    "play_count": fields.Integer,
-}
-
-# def serialize(self):
-#         return {
-#             'song_id': self.song_id,
-#             'song_name': self.song_name,
-#             'song_genre': self.song_genre,
-#             'song_lyrics': self.song_lyrics,
-#             'song_path': self.song_path,
-#             'rating': self.rating,
-#             'pcount': self.pcount,
-#             'albums': [{'id':album.album_id,'name':album.album_name} for album in self.albums],
-#             'artists': [{'id':artist.artist_id,'name':artist.artist_name} for artist in self.artists]
-#         }
-
 
 class SongResource(Resource):
     @jwt_required()
-    # @roles_required(["user"])
     @cache.cached(timeout=300, query_string=True)
     def get(self, id):
         song_id = id
@@ -52,7 +24,8 @@ class SongResource(Resource):
             return {"message": "Song not found"}, 404
         return song.serialize()
 
-    # @marshal_with(song_fields)
+    @jwt_required()
+    @roles_required(["creator","admin"])
     def post(self, id):
         cache.clear()
         # Check if the request contains the 'songfile' field
@@ -85,9 +58,7 @@ class SongResource(Resource):
         if s:
             return {"message": "Songname already exists"}, 400
 
-        # Convert user ID to integer
         user_id = int(id)
-
         # Create the song object
         song = Song(
             song_name=songname,
@@ -132,9 +103,10 @@ class SongResource(Resource):
                     song.albums.append(album_obj)
 
         db.session.commit()
-
         return {"message": "Successful"}, 200
 
+    @jwt_required()
+    @roles_required(["creator","admin"])
     def delete(self, id):
         cache.clear()
         song_id = id
@@ -158,32 +130,19 @@ class SongResource(Resource):
 
             # Delete the song file
             if os.path.exists(os.path.join(app.root_path, song.song_path)):
-                # print("File exists at", os.path.join(app.root_path, song.song_path))
                 os.remove(os.path.join(app.root_path, song.song_path))
             else:
                 print("File does not exist at", os.path.join(app.root_path, song.song_path))
 
-            # try:
-            #     # Construct the full path to the file
-            #     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 
-            #     # Check if the file exists
-            #     if os.path.exists(file_path):
-            #         # Delete the file
-            #         os.remove(file_path)
-            #         return jsonify({'message': 'File deleted successfully'})
-            #     else:
-            #         return jsonify({'error': 'File not found'}), 404
-            # except Exception as e:
-            #     return jsonify({'error': str(e)}), 500
-
-            # Delete the song from db
             db.session.delete(song)
             db.session.commit()
             return {"message": "Song deleted successfully"}, 200
 
         return {"message": "something went wrong"}
 
+    @jwt_required()
+    @roles_required(["creator","admin"])
     def patch(self, user_id, song_id):
         cache.clear()
         song = Song.query.get(song_id)
@@ -228,7 +187,8 @@ class SongResource(Resource):
 
         return {"message": "Song not found"}, 404
 
-
+@jwt_required()
+@cache.cached(timeout=300, query_string=True)
 def genreSongs(genre):
     songs = Song.query.filter_by(song_genre=str(genre)).all()
     if songs:
@@ -236,6 +196,8 @@ def genreSongs(genre):
     else:
         return {"message": "No song in this Genre"}, 404
 
+@jwt_required()
+@roles_required(["creator","admin"])
 def songsbyuser(user_id):
     if int(user_id)==0:
         abort(404)
