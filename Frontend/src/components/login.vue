@@ -12,7 +12,8 @@
         </p>
         <p>
           <label>{{ form.password.label }}</label><br>
-          <input v-model="formData.password_hash" type="password"><br>
+          <input v-model="formData.password_hash" type="password" id="myInput">
+          <input type="checkbox" @click="myFunction()">Show Password <br>
           <span v-for="error in formErrors.password" class="error">{{ error }}</span>
         </p>
         <p><button type="submit" class="submit-button">Submit</button></p>
@@ -70,7 +71,14 @@
         });
       },
 
-
+      myFunction() {
+        var x = document.getElementById("myInput");
+        if (x.type === "password") {
+          x.type = "text";
+        } else {
+          x.type = "password";
+  }
+}
     }
   };
 </script>

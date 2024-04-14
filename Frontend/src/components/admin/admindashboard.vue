@@ -18,7 +18,10 @@
       <div class="creator-applications">
         <button @click="navigateToCreatorApplications">Creator Applications</button>
       </div>
+      <button @click="Chart" class="btn btn-warning">Plot charts</button>
     </div>
+    <canvas id="songChart" ></canvas>
+    <canvas id="albumChart" ></canvas>
 </template>
 
 <script>
@@ -28,7 +31,10 @@
         totalUsers: 0,
         totalCreators: 0,
         totalSongs: 0,
-        totalAlbums: 0
+        totalAlbums: 0,
+        songs:[],
+        albums:[],
+
       };
     },
     mounted() {
@@ -91,8 +97,98 @@
       },
       navigateToCreatorApplications() {
         this.$router.push('/waiting-creator-application');
+      },
+
+      Chart(){
+        fetch('http://127.0.0.1:5000/songs/0', {
+          method:"GET",
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`
+          }
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          this.songs = [...data].sort((a, b) => b.pcount - a.pcount);
+          if(this.songs.length>5){
+            const songLabels = this.songs.slice(0, 5).map(song => song.song_name);
+            const songValues = this.songs.slice(0, 5).map(song => song.pcount);
+            this.createChart('songChart', songLabels, songValues);
+          } else{
+            const songLabels = this.songs.map(song => song.song_name);
+            const songValues = this.songs.map(song => song.pcount);
+            this.createChart('songChart', songLabels, songValues);
+          }
+        })
+
+        fetch(`http://127.0.0.1:5000/albums/0`,{
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.token}`
+          }
+          })
+          .then(response => response.json())
+          .then(data => {
+            this.albums = [...data].sort((a, b) => b.rcount - a.rcount);
+            if(this.albums.length>6){
+              const albumLabels = data.slice(0, 5).map(album => album.album_name);
+              const albumValues = data.slice(0, 5).map(album => album.rcount);
+              this.createChart('albumChart', albumLabels, albumValues);
+            }else{
+              const albumLabels = data.map(album => album.album_name);
+              const albumValues = data.map(album => album.rcount);
+              this.createChart('albumChart', albumLabels, albumValues);
+            }
+          })
+      },
+      createChart(canvasId, labels, values) {
+          const ctx = document.getElementById(canvasId).getContext('2d');
+          new Chart(ctx, {
+              type: 'bar',
+              data: {
+                  labels: labels,
+                  datasets: [{
+                      label: 'Count',
+                      data: values,
+                      backgroundColor: [
+                          'rgba(255, 99, 132, 0.2)', // Red
+                          'rgba(54, 162, 235, 0.2)', // Blue
+                          'rgba(255, 206, 86, 0.2)', // Yellow
+                          'rgba(75, 192, 192, 0.2)', // Green
+                          'rgba(153, 102, 255, 0.2)' // Purple
+                      ],
+                      borderColor: [
+                          'rgba(255, 99, 132, 1)', // Red
+                          'rgba(54, 162, 235, 1)', // Blue
+                          'rgba(255, 206, 86, 1)', // Yellow
+                          'rgba(75, 192, 192, 1)', // Green
+                          'rgba(153, 102, 255, 1)' // Purple
+                      ],
+                      borderWidth: 1
+                  }]
+              },
+              options: {
+                  scales: {
+                      yAxes: [{
+                          ticks: {
+                              beginAtZero: true
+                          }
+                      }]
+                  },
+                  // responsive: true,
+                  // maintainAspectRatio: false
+              }
+          });
+        }
+
       }
-    }
+    
   };
 </script>
 

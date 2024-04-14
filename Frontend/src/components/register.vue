@@ -37,6 +37,7 @@
       <p>
         <label for="password">Password:</label><br>
         <input type="password" id="password" v-model="formData.password_hash" class="form-control" required>
+        <input type="checkbox" @click="myFunction()">Show Password <br>
         <span v-if="!isValidPassword" class="error">Password must be at least 15 characters long</span>
       </p>
 
@@ -119,6 +120,14 @@ export default {
           console.error('Error checking email availability:', error);
       }
     },
+    myFunction() {
+        var x = document.getElementById("password");
+        if (x.type === "password") {
+          x.type = "text";
+        } else {
+          x.type = "password";
+        }
+      }
   },
   watch: {
     'formData.username'(newValue) {

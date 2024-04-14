@@ -14,11 +14,12 @@ def celery_init_app(app):
     celery_app = Celery(app.name, task_cls=FlaskTask)
     celery_app.conf.broker_url = "redis://localhost:6379/1"
     celery_app.conf.result_backend = "redis://localhost:6379/2"
-    celery_app.conf.timezone = "Asia/Kolkata"  
+    # celery_app.conf.timezone = "Asia/Kolkata"  
+    celery_app.conf.timezone = "UTC"  
     celery_app.conf.broker_connection_retry_on_startup=True  
     
-    
     return celery_app
+
 celery_app = celery_init_app(app)
 
 @celery_app.on_after_configure.connect
@@ -32,8 +33,5 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
         cache.init_app(app)
-        
-            
-            
         app.run(debug=True)
         

@@ -9,6 +9,7 @@
         <div class="form-group">
           <label for="password">Password:</label>
           <input type="password" class="form-control" id="password" v-model="password" required>
+          <input type="checkbox" @click="myFunction()">Show Password <br>
         </div>
         <button type="submit" class="btn btn-primary">Login</button>
       </form>
@@ -57,6 +58,14 @@
           alert('Login failed. Please check your credentials and try again.');
           window.location.reload();
         });
+      },
+      myFunction() {
+        var x = document.getElementById("password");
+        if (x.type === "password") {
+          x.type = "text";
+        } else {
+          x.type = "password";
+        }
       }
     }
   };

@@ -84,7 +84,6 @@
         });
       },
       fetchAlbums() {
-        // Perform fetch request to get albums data
         fetch(`http://127.0.0.1:5000/albums/0`,{
           method: 'GET',
           headers: {
@@ -94,7 +93,7 @@
           })
           .then(response => response.json())
           .then(data => {
-            this.albums = data; // Set fetched albums data
+            this.albums = data; 
           })
           .catch(error => {
             console.error('Error fetching albums data:', error);
@@ -118,7 +117,7 @@
   };
   </script>
   
-  <style scoped>
-  /* Add your scoped styles here */
-  </style>
+<style scoped>
+  
+</style>
   

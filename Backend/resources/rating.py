@@ -7,6 +7,7 @@ from cache import cache
 class SubmitRatingResource(Resource):
     @jwt_required()
     def post(self, song_id, user_id):
+        cache.clear()
         parser = reqparse.RequestParser()
         parser.add_argument('rating', type=int, required=True)
         args = parser.parse_args()
