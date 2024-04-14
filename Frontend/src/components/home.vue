@@ -63,7 +63,7 @@
             <h2>Top Artists</h2>
             <div class="row">
                 <div v-for="(artist, index) in topArtistsBySeenCount" :key="artist.id" class="col-md-3">
-                    <div class="card">
+                    <div class="card" v-if="artist.songs.length>0">
                       <img class="card-img-top" src="/artist.jpg" alt="Artist">
                       <h5 class="song-title card-header">{{ artist.artist_name }}</h5>
                       <h6 >Albums : </h6>

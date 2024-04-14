@@ -15,7 +15,7 @@
     <div class="container">
       <div class="row">
         <div class="col-md-4" v-for="artist in filteredArtists" :key="artist.artist_id">
-          <div class="card" style="width: 18rem;">
+          <div class="card" style="width: 18rem;" v-if="artist.songs.length > 0">
             <img class="card-img-top" src="/artist.jpg" alt="Artist">
             <div class="card-body">
               <h5 class="card-title title">{{ artist.artist_name }}</h5>

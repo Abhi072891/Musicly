@@ -73,7 +73,7 @@ class SongResource(Resource):
         db.session.add(song)
 
         # Handle artist names
-        if artistnames!="" or artistnames!=" ":
+        if artistnames!="" and artistnames!=" ":
             artist_names = [name.strip() for name in artistnames.split(",")]
             for artist_name in artist_names:
                 artist = Artist.query.filter(
@@ -158,15 +158,16 @@ class SongResource(Resource):
                 name.strip() for name in request.json.get("artistname").split(",")
             ]
             song.artists.clear()  # Clear existing artists
-            for artist_name in artist_names:
-                artist = Artist.query.filter(
-                    func.lower(Artist.artist_name) == func.lower(artist_name)
-                ).first()
-                if not artist:
-                    artist = Artist(artist_name=artist_name, scount=0, user_id=user_id)
-                    db.session.add(artist)
-                song.artists.append(artist)
-                artist.songs.append(song)
+            if artist_names!="" and artist_names!=" ":
+                for artist_name in artist_names:
+                    artist = Artist.query.filter(
+                        func.lower(Artist.artist_name) == func.lower(artist_name)
+                    ).first()
+                    if not artist:
+                        artist = Artist(artist_name=artist_name, scount=0, user_id=user_id)
+                        db.session.add(artist)
+                    song.artists.append(artist)
+                    # artist.songs.append(song)
 
             # Update album
             album_choice = request.json.get("album")

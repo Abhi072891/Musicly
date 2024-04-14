@@ -3,6 +3,7 @@ from flask import jsonify
 from model import db, Playlist, PlaylistContent, Song, roles_required
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from cache import cache
+from sqlalchemy import and_
 
 # Define fields for marshalling playlist data
 playlist_fields = {
@@ -34,6 +35,10 @@ class PlaylistResource(Resource):
         pl_id = args['playlist_id']
         song_ids = args['song_ids']
         new_playlist_name = args['new_playlist_name']
+
+        pl=Playlist.query.filter(and_(Playlist.playlist_name==new_playlist_name,Playlist.user_id==user_id)).all()
+        if pl:
+            return Playlist.query.get(pl_id), 201
 
         if pl_id == 'new':
             new_playlist = Playlist(user_id=user_id, playlist_name=new_playlist_name)

@@ -110,7 +110,7 @@
         }
       },
       deletePlaylist(id){
-        try{
+        if(confirm("want to delete the playlist?")){
             fetch(`http://127.0.0.1:5000/playlists/${parseInt(id)}`,{
                 method:'DELETE',
                 headers:{
@@ -122,13 +122,11 @@
                 return response.json();
             })
             .then(data => {
-                console.log(data)
                 this.fetchplaylists()
             })
-        }catch{
-
-        }
-      },
+          }
+        },
+      
       showPlaylist(playlistId,playlistName) {
         // Fetch playlist songs based on playlistId and update this.currentPlaylist
         try{
@@ -158,6 +156,7 @@
         this.isPlaying = true;
       },
       removeFromPlaylist(songId) {
+        if(confirm("remove this song from playlist?")){
         fetch(`http://127.0.0.1:5000/removesongfrompl/${parseInt(this.currentPlaylistId)}/${parseInt(songId)}`,{
             headers:{
                 'Content-Type': 'application/json',
@@ -171,7 +170,7 @@
             alert("song removed from playlist")
             this.showPlaylist(this.currentPlaylistId,this.currentPlaylistName)
         })
-      },
+      }},
 
       fetchplaylists(){
         fetch(`http://127.0.0.1:5000/playlists/${this.user_id}/${0}`,{
@@ -189,8 +188,9 @@
             console.log(error)
         })
       }
-    },
-  };
+    }
+    }
+  
 </script>
   
 <style scoped>
