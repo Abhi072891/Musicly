@@ -1,14 +1,15 @@
 <template>
     <div>
-      <div v-for="creator in creators" :key="creator.user_id" class="creator-item card mb-3">
+      <ul>
+      <li v-for="creator in creators" :key="creator.user_id" class="creator-item card mb-3">
         <div class="card-body">
-          <button @click="showSongsAndAlbums(creator.user_id)" class="btn btn-link">{{ creator.username }}</button>
-          <p>Status: {{ creator.status }}</p>
+          <!-- <p>Status: {{ creator.status }}</p> -->
           <span v-if="creator.status === 'blc'" class="status-icon red-circle">❌</span>
           <span v-else-if="creator.status === 'wlc'" class="status-icon green-circle">✅</span>
+          <button @click="showSongsAndAlbums(creator.user_id)" class="btn btn-primary">{{ creator.username }}&nbsp; &nbsp;</button>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
           <button @click="whitelistCreator(creator.user_id)" v-if="creator.status === 'blc'" class="btn btn-success">Whitelist</button>
           <button @click="blacklistCreator(creator.user_id)" v-if="creator.status === 'wlc'" class="btn btn-danger">Blacklist</button>
-          <div v-if="selectedCreatorId === creator.user_id" class="mt-3">
+          <div v-if="selectedCreatorId === true" class="mt-3">
             <div v-if="songs.length > 0">
               <h5>Songs</h5>
               <div v-for="song in songs" :key="song.song_id" class="song-item">
@@ -25,7 +26,8 @@
             </div>
           </div>
         </div>
-      </div>
+      </li>
+      </ul>
     </div>
 </template>
   
@@ -88,6 +90,7 @@
           });
       },
       whitelistCreator(userId) {
+        if (confirm("Are you sure you want to Whitelist the creator")) {
           fetch(`http://127.0.0.1:5000/whitelistcreator/${parseInt(userId)}`,{
               method: 'GET',
               headers: {
@@ -105,8 +108,9 @@
             .catch(error => {
             console.error('Error whitelisting creator:', error);
             });
-      },
+      }},
       blacklistCreator(userId) {
+        if (confirm("Are you sure you want to Blacklist the creator")) {
           fetch(`http://127.0.0.1:5000/blacklistcreator/${parseInt(userId)}`,{
               method: 'GET',
               headers: {
@@ -124,7 +128,7 @@
             .catch(error => {
             console.error('Error blacklisting creator:', error);
             });
-      },
+      }},
       showSongsAndAlbums(creatorId) {
         creatorId=parseInt(creatorId)
         this.selectedCreatorId=true

@@ -19,22 +19,29 @@
           <li class="nav-item">
             <router-link class="nav-link" to="/artists">Artists</router-link>
           </li>
-          <li class="nav-item">
+          <li class="nav-item" v-show="!isAdmin">
             <router-link class="nav-link" to="/playlist">Playlists</router-link>
           </li>
-          <li class="nav-item" v-if="localStorage.user_role !== 'admin'">
+          <li class="nav-item" v-show="!isAdmin">
             <router-link class="nav-link" to="/creator">Creator</router-link>
           </li>
           <li class="nav-item">
-            <button class="nav-link btn btn-link" @click="logout">Logout</button>
+            <button class="nav-link btn btn-danger" @click="logout">Logout</button>
           </li>
-          <li class="nav-item">
+          <li class="nav-item" v-show="!isAdmin">
             <router-link class="nav-link" to="/adminlogin">Admin Login</router-link>
           </li>
         </ul>
       </div>
     </div>
   </nav>
+  <header class="hero bg-primary text-white text-center py-5" v-show="!logged_in">
+        <div class="container">
+            <h1 class="display-4">Discover the World of Music</h1>
+            <p class="lead">Explore, listen, and create your own playlists.</p>
+            <router-link to="/login" class="btn btn-light btn-lg" title="create your playslist">Get Started</router-link>
+        </div>
+  </header>
   <router-view/>
 </template>
 
@@ -43,11 +50,14 @@
 export default {
   data() {
     return {
-      localStorage: localStorage
+      // localStorage: localStorage,
+      isAdmin: false,
+      logged_in: false
     };
   },
   mounted() {
-    this.checkLogin()
+    // this.checkLogin()
+    this.isAdmin = localStorage.user_role === 'admin';
   },
   methods: {
     checkLogin() {
@@ -72,17 +82,23 @@ export default {
       })
       .catch(error => {
         // Display alert and redirect to login page
-        alert('Please log in again.');
+        alert('Please log in.');
         this.$router.push('/login');
       });
     },
     logout() {
-      // Clear local storage
-      localStorage.clear();
-      // Redirect to the login page
-      this.$router.push('/login');
+      if (confirm("Are you sure you want to log out")) {
+        localStorage.clear();
+        this.$router.push('/login');
+      }
     }
-  }
+  },
+  watch: {
+    '$route'() {
+      this.isAdmin = localStorage.user_role === 'admin';
+      this.logged_in = localStorage.logged_in === 'yes';
+    }
+  },
 };
 </script>
 

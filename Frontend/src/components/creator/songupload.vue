@@ -72,8 +72,8 @@ export default {
           this.$router.push('/login');
         }
         fetch('http://127.0.0.1:5000/jwt/testing', {
+          method: 'GET',
           headers: {
-            method: 'GET',
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.token}`
           }
@@ -120,17 +120,17 @@ export default {
       for (let key in this.formData) {
         formData.append(key, this.formData[key]);
       }
+      console.log(formData)
       fetch(`http://127.0.0.1:5000/songs/${this.user_id}`, {
           method: 'POST',
           body: formData,
           headers: {
-            'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.token}`
           }
         })
         .then(response => {
           if (response.ok) {
-            this.$router.push({ name: 'creatordashboard' });
+            return response.json()
           } else {
             throw new Error('Failed to upload song');
           }
@@ -141,7 +141,7 @@ export default {
         })
         .catch(error => {
           alert('couldnot upload the song')
-          window.location.reload()
+          // window.location.reload()
         });
     }
   }

@@ -3,7 +3,7 @@
       <div class="row justify-content-center">
         <div class="col-md-8">
           <h2 class="mb-4">User Registration as Creator</h2>
-          <router-link :to="'/home/' + userId" class="btn btn-secondary">Go back</router-link>
+          <router-link to="/home" class="btn btn-secondary">Go back</router-link>
           <h5>User : {{ username }}</h5>
           <h5>{{ name }}</h5>
           <form @submit.prevent="submitForm">
@@ -86,7 +86,7 @@
         })
         .then(response => {
           if (!response.ok) {
-            throw new Error('Network response was not ok');
+            throw new Error('Wrong Password');
           }
           alert('Request sent successfully');
           localStorage.setItem('status', 'wait');

@@ -1,10 +1,12 @@
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from model import db, User, Role, Song, Album
+from model import db, User, Role, Song, Album, roles_required
 from sqlalchemy import or_
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from cache import cache
+from sqlalchemy.sql import func
 
 class UserRegister(Resource):
-
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('name', type=str, required=True, help='Name is required')
@@ -51,20 +53,21 @@ class UserLogin(Resource):
         args = parser.parse_args()
 
         user = User.query.filter_by(username=args['username']).first()
-
+        user.login_at=func.now()
+        db.session.commit()
         if user and user.check_password(args['password_hash']):
             access_token = create_access_token(identity=user.id)
             return {'access_token': access_token,
                     'user_id':user.id,
                     'username':user.username,
                     'name':user.name,
-                    'user_role':user.roles[-1].name}, 200
+                    'user_role':user.roles[-1].name,
+                    'status':user.status}, 200
         else:
             return {'message': 'Invalid username or password'}, 401
 
 class AdminLogin(Resource):
-    @jwt_required()
-    @roles_required(["admin"])
+
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('username', type=str, required=True, help='Username is required')
@@ -72,15 +75,16 @@ class AdminLogin(Resource):
         args = parser.parse_args()
 
         admin = User.query.filter_by(username=args['username']).first()
-        role = Role.query.get(3)
-        if admin and (role in admin.roles):
-            if admin and admin.check_password(args['password']):
+        role = Role.query.get(3).name
+        if admin and (role == admin.roles[-1].name):   
+            if admin.check_password(args['password']):
                 access_token = create_access_token(identity=admin.id)
                 return {'access_token': access_token,
                         'user_id':admin.id,
                         'username':admin.username,
                         'name':admin.name,
-                        'user_role':admin.roles[-1].name}, 200
+                        'user_role':admin.roles[-1].name,
+                        'status':admin.status}, 200
         else:
             return {'message': 'Invalid username or password'}, 401
 
@@ -130,6 +134,7 @@ class ProtectedResource(Resource):
 
 @jwt_required()
 def creatorapplication(user_id):
+    parser = reqparse.RequestParser()
     parser.add_argument('password', type=str, required=True, help='Password is required')
     args = parser.parse_args()
     user=User.query.get(user_id)

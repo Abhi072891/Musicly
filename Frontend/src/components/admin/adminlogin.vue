@@ -40,7 +40,17 @@
           if (!response.ok) {
             throw new Error('Login failed');
           }
-          this.$router.push('/admindashboard');
+          return response.json()
+        })
+        .then(data => {
+          console.log(data)
+          localStorage.setItem('token', data.access_token)
+          localStorage.setItem('user_id',data.user_id)
+          localStorage.setItem('user_role',data.user_role)
+          localStorage.setItem('user_status',data.status)
+          localStorage.setItem('name',data.name)
+          localStorage.setItem('logged_in','yes')
+          this.$router.push('/admindashboard')
         })
         .catch(error => {
           console.error('Login failed:', error);

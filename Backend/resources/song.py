@@ -1,6 +1,6 @@
 from flask import request, abort
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from flask_restful import Resource, marshal_with, fields
+from flask_restful import Resource
 from model import db, Song, Artist, Album, PlaylistContent, Rate, roles_required
 from sqlalchemy import func
 from werkzeug.utils import secure_filename
@@ -29,6 +29,7 @@ class SongResource(Resource):
     def post(self, id):
         cache.clear()
         # Check if the request contains the 'songfile' field
+        print('song uploading')
         if "songfile" not in request.files:
             return {"message": "No file uploaded"}, 400
 

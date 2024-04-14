@@ -6,7 +6,7 @@
             <div class="row">
                 <div v-for="(song, index) in sortedSongsByRating" :key="song.song_id" class="col-md-3" >
                     <div class="card">
-                      <img class="card-img-top" src="song.jpg" alt="Song">
+                      <img class="card-img-top" src="/song.jpg" alt="Song">
                       <h5 class="song-title card-header">{{ song.song_name }}</h5>
                       <p class="card-text">
                           <h6 style="display: inline;">Genre :</h6>{{ song.song_genre }} <br>                   
@@ -26,7 +26,7 @@
             <div class="row">
                 <div v-for="(song, index) in sortedSongsByRating" :key="song.song_id" class="col-md-3" >
                     <div class="card">
-                      <img class="card-img-top" src="song.jpg" alt="Song">
+                      <img class="card-img-top" src="/song.jpg" alt="Song">
                       <h5 class="song-title card-header">{{ song.song_name }}</h5>
                       <p class="card-text">
                           <h6 style="display: inline;">Genre :</h6>{{ song.song_genre }} <br>                   
@@ -46,7 +46,7 @@
             <div class="row">
                 <div v-for="(album, index) in topAlbumsBySeenCount" :key="album.id" class="col-md-3">
                     <div class="card">
-                      <img class="card-img-top" src="album.jpg" alt="Album">
+                      <img class="card-img-top" src="/album.jpg" alt="Album">
                       <h5 class="song-title card-header">{{ album.album_name }}</h5>
                       <h6 >Artists : </h6>
                       <p v-for="(artist, index) in album.artists" :key="index" class="card-text" style="display: inline;">{{ artist.name }}{{ index < album.artists.length - 1 ? ', ' : '' }}</p>
@@ -64,7 +64,7 @@
             <div class="row">
                 <div v-for="(artist, index) in topArtistsBySeenCount" :key="artist.id" class="col-md-3">
                     <div class="card">
-                      <img class="card-img-top" src="artist.jpg" alt="Artist">
+                      <img class="card-img-top" src="/artist.jpg" alt="Artist">
                       <h5 class="song-title card-header">{{ artist.artist_name }}</h5>
                       <h6 >Albums : </h6>
                       <p v-for="(album, index) in artist.albums" :key="index" class="card-text" style="display: inline;">{{ album.name }}{{ index < artist.albums.length - 1 ? ', ' : '' }}</p>

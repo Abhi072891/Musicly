@@ -16,7 +16,7 @@
       <div class="row">
         <div class="col-md-4" v-for="album in filteredAlbums" :key="album.album_id">
           <div class="card" style="width: 18rem;">
-            <img class="card-img-top" src="album.jpg" alt="Album">
+            <img class="card-img-top" src="/album.jpg" alt="Album">
             <div class="card-body">
               <h5 class="card-title title">{{ album.album_name }}</h5>
               <h6 style="display: inline;">Artists : </h6>

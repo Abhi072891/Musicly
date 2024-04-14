@@ -1,10 +1,8 @@
-# config.py
-
 
 class Config:
     JWT_SECRET_KEY = "jwt_secret_key"
     SECRET_KEY = "super-secret"
-    SQLALCHEMY_DATABASE_URI = "sqlite:///demo.db"
+    SQLALCHEMY_DATABASE_URI = "sqlite:///musicly.db"
     JWT_ACCESS_TOKEN_EXPIRES = 3600
 
     CACHE_TYPE= 'RedisCache'

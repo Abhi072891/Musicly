@@ -61,6 +61,8 @@
           localStorage.setItem('user_id',data.user_id)
           localStorage.setItem('user_role',data.user_role)
           localStorage.setItem('user_status',data.status)
+          localStorage.setItem('name',data.name)
+          localStorage.setItem('logged_in','yes')
           this.$router.push({name : 'home'})
         })
         .catch(error => {

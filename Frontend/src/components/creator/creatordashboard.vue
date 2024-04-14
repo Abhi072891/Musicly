@@ -87,7 +87,7 @@
         });
 
         const role = localStorage.getItem('user_role');
-        const status = localStorage.getItem('status');
+        const status = localStorage.getItem('user_status');
         if(role==='admin'){
           this.$router.push('/admindashboard');
         }

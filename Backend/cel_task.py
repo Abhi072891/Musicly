@@ -9,6 +9,7 @@ def setup_periodic_tasks(sender, **kwargs):
     
     # Reminding users to login
     sender.add_periodic_task(crontab(minute='*', hour='*'), tasks.daily_reminders.s())
+    sender.add_periodic_task(crontab(minute='*', hour='*'), tasks.new_song_release.s())
 
     # # Update access logs
     # sender.add_periodic_task(crontab(minute='*', hour='*'), tasks.update_access_logs.s())

@@ -4,7 +4,7 @@ from email.mime.text import MIMEText
 
 SMTP_HOST = "localhost"
 SMTP_PORT = 1025
-SENDER_EMAIL = 'Abhishek_Band@Barat.Com'
+SENDER_EMAIL = 'Musicly@music.com'
 SENDER_PASSWORD = ''
 
 

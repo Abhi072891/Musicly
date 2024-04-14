@@ -1,15 +1,18 @@
 <template>
-    <div>
-      <h2>Creator Waiting Applications</h2>
-      <ul>
-        <li v-for="user in users" :key="user.user_id">
-          {{ user.username }}
-          <button @click="approve(user.user_id)">Approve</button>
-          <button @click="reject(user.user_id)">Reject</button>
-        </li>
-      </ul>
-    </div>
+  <div class="container">
+    <h2>Creator Waiting Applications</h2>
+    <ul class="list-group">
+      <li v-for="user in users" :key="user.user_id" class="list-group-item d-flex justify-content-between align-items-center">
+        <h4> {{ user.username }} </h4>
+        <div>
+          <button @click="approve(user.user_id)" class="btn btn-success">Approve</button>
+          <button @click="reject(user.user_id)" class="btn btn-danger">Reject</button>
+        </div>
+      </li>
+    </ul>
+  </div>
 </template>
+
 
 <script>
   export default {

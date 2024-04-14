@@ -4,8 +4,6 @@ from model import db
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from config import Config
-# from functools import wraps
-# from flask_jwt_extended import get_jwt_identity
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -23,7 +21,6 @@ CORS(
         }
     },
 )
-
 
 
 # User registration and login endpoints

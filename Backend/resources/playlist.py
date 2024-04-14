@@ -1,6 +1,8 @@
 from flask_restful import Resource, reqparse, fields, marshal_with
 from flask import jsonify
-from model import db, Playlist, PlaylistContent, Song
+from model import db, Playlist, PlaylistContent, Song, roles_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from cache import cache
 
 # Define fields for marshalling playlist data
 playlist_fields = {

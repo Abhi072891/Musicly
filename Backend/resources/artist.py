@@ -1,8 +1,9 @@
 from flask_restful import Resource, marshal_with, fields, reqparse
 from flask import request, abort
 from sqlalchemy import func
-from model import db, Song, Artist
-
+from model import db, Song, Artist, roles_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from cache import cache
 
 class ArtistResource(Resource):
     @cache.cached(timeout=300, query_string=True)
@@ -19,9 +20,6 @@ class ArtistResource(Resource):
         else:
             return {'message': 'artist not found'}, 404
         
-
-
-//############not used anywhere####
 
     @jwt_required()
     @roles_required(["creator","admin"])

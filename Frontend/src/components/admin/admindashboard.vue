@@ -39,7 +39,7 @@
       checkUser(){
         if (!localStorage.token) {
           alert("Login again")
-          this.$router.push('/login');
+          this.$router.push('/adminlogin');
         }
         fetch('http://127.0.0.1:5000/jwt/testing', {
           headers: {
@@ -55,12 +55,12 @@
         })
         .catch(error => {
           alert('Please log in again.');
-          this.$router.push('/login');
+          this.$router.push('/adminlogin');
         });
 
         if(localStorage.user_role!="admin"){
             alert('not a admin')
-            window.location.reload()
+            this.$router.push('/home')
         }
       },
       fetchStatistics() {

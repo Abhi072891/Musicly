@@ -1,7 +1,8 @@
-from flask_restful import Resource, marshal_with, fields, reqparse
+from flask_restful import Resource, reqparse
 from flask import request, abort
 from sqlalchemy import func
-from model import db, Album, Song, Artist
+from model import db, Album, Song, Artist, roles_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from cache import cache
 
 

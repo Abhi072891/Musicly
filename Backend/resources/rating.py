@@ -1,6 +1,8 @@
 from flask_restful import Resource, reqparse
-from model import db, Rate, Song
+from model import db, Rate, Song, roles_required
 from sqlalchemy import func
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from cache import cache
 
 class SubmitRatingResource(Resource):
     @jwt_required()

@@ -34,7 +34,7 @@ class Song(db.Model):
     song_path = db.Column(db.String(200))
     rating = db.Column(db.Integer)
     pcount = db.Column(db.Integer)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=func.now())
 
     # Define the many-to-many relationship with albums
@@ -67,10 +67,10 @@ class Rate(db.Model):
 
 class Artist(db.Model):
     __tablename__ = 'Artists'
-    user_id = db.Column(db.Integer)
     artist_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     artist_name = db.Column(db.String(100), unique=True, nullable=False, index=True)
     scount = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
 
     # Define the many-to-many relationship with albums
     albums = db.relationship('Album', secondary=album_artist_association, backref=db.backref('artists', lazy='dynamic'))
@@ -92,7 +92,7 @@ class Album(db.Model):
     album_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     album_name = db.Column(db.String(100), nullable=False, index=True)
     rcount= db.Column(db.Integer)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=func.now())
 
     def __repr__(self):
@@ -112,7 +112,7 @@ class Album(db.Model):
 class Playlist(db.Model):
     __tablename__ = 'Playlists'
     playlist_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
     playlist_name = db.Column(db.String(), nullable=False)
     created_at = db.Column(db.DateTime, default=func.now())
 
@@ -194,7 +194,6 @@ def roles_required(roles):
                 
                 return {"message" : "Not authorised to access this page"} , 401
                 
-
             except Exception as e:
                 print("Error from roles required", e)
                 return {"message" : "Internal Server Error"} , 500
