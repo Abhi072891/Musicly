@@ -1,4 +1,4 @@
 newenv
 __pycache__
 .vscode
-/static/music/*
+/static/music/
