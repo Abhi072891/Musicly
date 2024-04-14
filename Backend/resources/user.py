@@ -128,8 +128,8 @@ def whitelist_creator(user_id):
 class ProtectedResource(Resource):
     @jwt_required()
     def get(self):
-        data=get_jwt_identity()
-        print(data)
+        # data=get_jwt_identity()
+        # print(data)
         return {'message': 'Protected resource'}, 200
 
 @jwt_required()

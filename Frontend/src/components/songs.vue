@@ -12,8 +12,9 @@
       </div>
     </section>
     <div class="sorting-buttons">
-      <button @click="sortByRating" class="btn btn-primary">Sort by Rating</button>
-      <button @click="sortByPlaycount" class="btn btn-primary">Sort by Playcount</button>
+      <button @click="sortByRating" class="btn btn-primary">Top Rated</button>
+      <button @click="sortByPlaycount" class="btn btn-primary">Most Played</button>
+      <button @click="sortByRecent" class="btn btn-primary">Most Recent</button>
     </div>
     <section>
       <div class="card">
@@ -95,8 +96,7 @@
         })
         .then(data => {
           this.songs = data;
-          this.filteredSongs=data;
-          console.log(this.filteredSongs)
+          this.filteredSongs=this.songs;
         })
         .catch(error => {
           console.error('Error fetching songs:', error);
@@ -114,6 +114,9 @@
       },
       sortByPlaycount() {
         this.filteredSongs = [...this.songs].sort((a, b) => b.pcount - a.pcount);
+      },
+      sortByRecent() {
+        this.filteredSongs = [...this.songs].sort((a, b) =>  new Date(b.created_at) - new Date(a.created_at));
       },
     },
   };

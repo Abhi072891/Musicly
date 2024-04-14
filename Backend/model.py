@@ -2,8 +2,9 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 from flask_jwt_extended import get_jwt_identity
-from sqlalchemy import DateTime
 from sqlalchemy.sql import func
+import json
+from datetime import datetime
 
 
 db = SQLAlchemy()
@@ -55,6 +56,7 @@ class Song(db.Model):
             'song_path': self.song_path,
             'rating': self.rating,
             'pcount': self.pcount,
+            'created_at': json.dumps(self.created_at, default=lambda o: o.isoformat() if isinstance(o, datetime) else None),
             'albums': [{'id':album.album_id,'name':album.album_name} for album in self.albums],
             'artists': [{'id':artist.artist_id,'name':artist.artist_name} for artist in self.artists]
         }

@@ -73,7 +73,7 @@ class SongResource(Resource):
         db.session.add(song)
 
         # Handle artist names
-        if artistnames:
+        if artistnames!="" or artistnames!=" ":
             artist_names = [name.strip() for name in artistnames.split(",")]
             for artist_name in artist_names:
                 artist = Artist.query.filter(
