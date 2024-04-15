@@ -17,6 +17,6 @@ def send_email(to, subject, content_body):
     msg.attach(MIMEText(content_body, 'html'))
     client = SMTP(host=SMTP_HOST, port=SMTP_PORT)
     client.send_message(msg=msg)
-    print("Email sent successfully : ", to)
+    # print("Email sent successfully : ", to)
     client.quit()
     

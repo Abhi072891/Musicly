@@ -17,7 +17,7 @@ def reminder_webhook(username):
         headers=message_headers,
         body=dumps(app_message),
     )
-    print(response)
+    # print(response)
 
 def song_webhook(songname):
     url = "https://chat.googleapis.com/v1/spaces/AAAA9i3xW2M/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=7Is6fRMLnuvNgYTxAJdPcWh7DUDRhC6XMotLaivVy3o"
@@ -34,5 +34,5 @@ def song_webhook(songname):
         headers=message_headers,
         body=dumps(app_message),
     )
-    print(response)
+    # print(response)
 

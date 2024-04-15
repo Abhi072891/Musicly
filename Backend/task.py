@@ -10,9 +10,11 @@ from celery import shared_task
 def daily_reminders():
     one_day_ago=datetime.now(timezone.utc)-timedelta(days=1)
     users = User.query.filter(User.login_at<=one_day_ago).all()
-    for user in users:        
+    for user in users:     
+        if user.status=='admin':
+            continue   
         reminder_webhook(user.username)
-        print(f"Reminder sent to {user.username}")
+        # print(f"Reminder sent to {user.username}")
 
 @shared_task(ignore_result=True)
 def new_song_release():
@@ -20,7 +22,7 @@ def new_song_release():
     songs = Song.query.filter(Song.created_at>=one_day_ago).all()
     for song in songs:
         song_webhook(song.song_name)
-        print(f'notification for song {song.song_name} sent')
+        # print(f'notification for song {song.song_name} sent')
 
 @shared_task(ignore_result=True)
 def monthly_activity_report():
