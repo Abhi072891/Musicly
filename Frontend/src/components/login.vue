@@ -57,7 +57,11 @@
             return response.json();
         })
         .then(data => {
-          console.log(data)
+          // console.log(data)
+          if(data.user_role=='admin'){
+            this.$router.push('/adminlogin')
+            return
+          }
           localStorage.setItem('token', data.access_token)
           localStorage.setItem('user_id',data.user_id)
           localStorage.setItem('user_role',data.user_role)

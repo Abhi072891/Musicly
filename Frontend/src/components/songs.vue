@@ -95,7 +95,7 @@
           return response.json();
         })
         .then(data => {
-          this.songs = data;
+          this.songs = [...data].sort((a, b) => b.pcount - a.pcount).reverse();
           this.filteredSongs=this.songs;
         })
         .catch(error => {

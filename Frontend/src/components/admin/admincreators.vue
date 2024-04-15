@@ -6,10 +6,10 @@
           <!-- <p>Status: {{ creator.status }}</p> -->
           <span v-if="creator.status === 'blc'" class="status-icon red-circle">❌</span>
           <span v-else-if="creator.status === 'wlc'" class="status-icon green-circle">✅</span>
-          <button @click="showSongsAndAlbums(creator.user_id)" class="btn btn-primary">{{ creator.username }}&nbsp; &nbsp;</button>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+          <button @click="showSongsAndAlbums(creator.user_id)" class="btn btn-primary btn-lg">{{ creator.username }}&nbsp; &nbsp;</button>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
           <button @click="whitelistCreator(creator.user_id)" v-if="creator.status === 'blc'" class="btn btn-success">Whitelist</button>
           <button @click="blacklistCreator(creator.user_id)" v-if="creator.status === 'wlc'" class="btn btn-danger">Blacklist</button>
-          <div v-if="selectedCreatorId === true" class="mt-3">
+          <div v-if="selectedCreatorId === creator.user_id" class="mt-3">
             <div v-if="songs.length > 0">
               <h5>Songs</h5>
               <div v-for="song in songs" :key="song.song_id" class="song-item">
@@ -130,9 +130,8 @@
             });
       }},
       showSongsAndAlbums(creatorId) {
-        creatorId=parseInt(creatorId)
-        this.selectedCreatorId=true
-        fetch(`http://127.0.0.1:5000/albumsbyuser/${creatorId}`,{
+        this.selectedCreatorId=creatorId
+        fetch(`http://127.0.0.1:5000/albumsbyuser/${parseInt(creatorId)}`,{
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -145,7 +144,7 @@
           })
           .catch(error => console.log(error))
             
-        fetch(`http://127.0.0.1:5000/songsbyuser/${creatorId}`,{
+        fetch(`http://127.0.0.1:5000/songsbyuser/${parseInt(creatorId)}`,{
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',

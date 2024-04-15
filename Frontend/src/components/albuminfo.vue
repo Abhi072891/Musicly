@@ -6,7 +6,7 @@
       <h5>Artists of Album <span class="font-italic">{{ album.album_name }}</span>:</h5>
       <ol class="list-group">
         <li v-for="artist in album.artists" :key="artist.id" class="list-group-item">
-          <router-link :to="'/artists/' + artist.id" class="btn btn-primary">{{ artist.name }}</router-link>
+          <router-link :to="'/artists/' + artist.id" class="btn btn-primary btn-block btn-lg">{{ artist.name }}</router-link>
         </li>
       </ol>
     </div>
@@ -15,7 +15,7 @@
       <h5>Songs in <span class="font-italic">{{ album.album_name }}</span>:</h5>
       <ol>
         <li v-for="song in album.songs" :key="song.id" class="mb-4">
-          <router-link :to="'/songinfo/' + song.id" class="btn btn-secondary">{{ song.name }}</router-link>
+          <router-link :to="'/songinfo/' + song.id" class="btn btn-info btn-block btn-lg">{{ song.name }}</router-link><br>
           <audio :src="'http://127.0.0.1:5000/' + song.path" class="ml-3" controls></audio>
         </li>
       </ol>
