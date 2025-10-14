@@ -11,7 +11,7 @@
 I am a full-time student of IITM BS, currently in the diploma level of programming.
 
 ## Project Description
-Larder Vault is a comprehensive music streaming platform built with Vue.js for the front end and Python-Flask for the back end. It allows users to play songs, make playlists, and offers enhanced control for administrators and creators. The platform also provides graphical insights into performance data for popularity analysis of songs and albums.
+Musicly is a comprehensive music streaming platform built with Vue.js for the front end and Python-Flask for the back end. It allows users to play songs, make playlists, and offers enhanced control for administrators and creators. The platform also provides graphical insights into performance data for popularity analysis of songs and albums.
 
 ## Demo Video
 [Watch Demo Video Here](https://drive.google.com/file/d/1WnN01rToYgdB5OUPCjz8e7CcOZs8TzTF/view?usp=drive_link)
